@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usar Template de Prompt - PostPilot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../build/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h3>PostPilot</h3>
+            </div>
+
+            <ul class="list-unstyled components">
+                <li>
+                    <a href="../dashboard/index.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="../posts/index.html"><i class="fas fa-file-alt"></i> Postagens</a>
+                </li>
+                <li>
+                    <a href="../posts/calendar.html"><i class="fas fa-calendar"></i> Calendário</a>
+                </li>
+                <li class="active">
+                    <a href="index.html"><i class="fas fa-lightbulb"></i> Templates de IA</a>
+                </li>
+                <li>
+                    <a href="../categories/index.html"><i class="fas fa-folder"></i> Categorias</a>
+                </li>
+                <li>
+                    <a href="../tags/index.html"><i class="fas fa-tags"></i> Tags</a>
+                </li>
+                <li>
+                    <a href="../reports/index.html"><i class="fas fa-chart-bar"></i> Relatórios</a>
+                </li>
+                <li>
+                    <a href="../settings/index.html"><i class="fas fa-cog"></i> Configurações</a>
+                </li>
+                <li>
+                    <a href="../subscription/index.html"><i class="fas fa-star"></i> Assinatura</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Page Content -->
+        <div id="content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fas fa-align-left"></i>
+                        <span>Menu</span>
+                    </button>
+                    <div class="d-flex">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user"></i> <span id="username">Usuário</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="../settings/index.html">Perfil</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" id="logout">Sair</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid">
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h2>Usar Template de Prompt</h2>
+                        <p>Preencha as variáveis do template para gerar conteúdo personalizado.</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="index.html" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Detalhes do Template -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 id="templateName">Carregando template...</h5>
+                    </div>
+                    <div class="card-body">
+                        <p id="templateDescription" class="mb-3">Carregando descrição...</p>
+                        <div class="mb-3">
+                            <span class="badge bg-secondary" id="templateCategory">Categoria</span>
+                            <span class="badge bg-primary" id="templateType">Tipo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulário de Variáveis -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Preencha as Variáveis</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="variablesForm">
+                            <div id="variablesContainer">
+                                <p class="text-center text-muted">Carregando variáveis...</p>
+                            </div>
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html'">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Gerar Conteúdo</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Resultado Gerado (inicialmente oculto) -->
+                <div class="card mb-4 d-none" id="resultCard">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5>Conteúdo Gerado</h5>
+                        <div>
+                            <button class="btn btn-sm btn-outline-primary" id="copyResultBtn">
+                                <i class="fas fa-copy"></i> Copiar
+                            </button>
+                            <button class="btn btn-sm btn-outline-success" id="createPostBtn">
+                                <i class="fas fa-file-alt"></i> Criar Postagem
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="generatedContent" class="border rounded p-3 bg-light">
+                            <!-- O conteúdo gerado será inserido aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spinner de Carregamento -->
+                <div class="text-center d-none" id="loadingSpinner">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                    <p class="mt-2">Gerando conteúdo... Isso pode levar alguns segundos.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.2/marked.min.js"></script>
+    <script src="../build/js/auth.js"></script>
+    <script src="../build/js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar autenticação
+            if (!api.isAuthenticated()) {
+                window.location.href = '../login.html';
+                return;
+            }
+
+            // Exibir nome do usuário
+            const user = api.getCurrentUser();
+            if (user) {
+                document.getElementById('username').textContent = user.name;
+            }
+
+            // Logout
+            document.getElementById('logout').addEventListener('click', async function(e) {
+                e.preventDefault();
+                try {
+                    await api.auth.logout();
+                    window.location.href = '../login.html';
+                } catch (error) {
+                    console.error('Erro ao fazer logout:', error);
+                    alert('Erro ao fazer logout. Por favor, tente novamente.');
+                }
+            });
+
+            // Toggle sidebar
+            document.getElementById('sidebarCollapse').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+
+            // Obter ID do template da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const templateId = urlParams.get('id');
+            
+            if (!templateId) {
+                showAlert('ID do template não fornecido. Redirecionando para a lista de templates.', 'danger');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+                return;
+            }
+            
+            // Carregar detalhes do template
+            loadTemplate(templateId);
+            
+            // Configurar formulário
+            document.getElementById('variablesForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Coletar valores das variáveis
+                const variables = {};
+                const inputs = document.querySelectorAll('[data-variable]');
+                inputs.forEach(input => {
+                    variables[input.getAttribute('data-variable')] = input.value;
+                });
+                
+                // Mostrar spinner
+                document.getElementById('loadingSpinner').classList.remove('d-none');
+                document.getElementById('resultCard').classList.add('d-none');
+                
+                try {
+                    // Chamar API para gerar conteúdo
+                    const result = await api.prompts.generate(templateId, variables);
+                    
+                    // Exibir resultado
+                    const generatedContent = document.getElementById('generatedContent');
+                    
+                    // Converter markdown para HTML se o conteúdo parecer ser markdown
+                    if (result.generatedContent.includes('#') || result.generatedContent.includes('*')) {
+                        generatedContent.innerHTML = marked.parse(result.generatedContent);
+                    } else {
+                        generatedContent.innerHTML = result.generatedContent.replace(/\n/g, '<br>');
+                    }
+                    
+                    // Mostrar card de resultado
+                    document.getElementById('resultCard').classList.remove('d-none');
+                    
+                    // Configurar botão de copiar
+                    document.getElementById('copyResultBtn').addEventListener('click', function() {
+                        navigator.clipboard.writeText(result.generatedContent)
+                            .then(() => {
+                                showAlert('Conteúdo copiado para a área de transferência!', 'success');
+                            })
+                            .catch(err => {
+                                console.error('Erro ao copiar texto:', err);
+                                showAlert('Erro ao copiar texto. Por favor, tente novamente.', 'danger');
+                            });
+                    });
+                    
+                    // Configurar botão de criar postagem
+                    document.getElementById('createPostBtn').addEventListener('click', function() {
+                        // Armazenar conteúdo gerado no localStorage para usar na página de criação de postagem
+                        localStorage.setItem('generatedContent', result.generatedContent);
+                        window.location.href = '../posts/create.html?from=prompt';
+                    });
+                    
+                    // Rolar para o resultado
+                    document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth' });
+                } catch (error) {
+                    console.error('Erro ao gerar conteúdo:', error);
+                    showAlert('Erro ao gerar conteúdo. Por favor, tente novamente.', 'danger');
+                } finally {
+                    // Esconder spinner
+                    document.getElementById('loadingSpinner').classList.add('d-none');
+                }
+            });
+        });
+
+        // Função para carregar detalhes do template
+        async function loadTemplate(templateId) {
+            try {
+                const response = await api.prompts.get(templateId);
+                const template = response.template;
+                const variables = response.variables;
+                
+                // Preencher detalhes do template
+                document.getElementById('templateName').textContent = template.name;
+                document.getElementById('templateDescription').textContent = template.description || 'Sem descrição';
+                document.getElementById('templateCategory').textContent = template.category;
+                document.getElementById('templateType').textContent = template.is_default ? 'Padrão' : 'Personalizado';
+                document.getElementById('templateType').className = template.is_default ? 'badge bg-primary' : 'badge bg-success';
+                
+                // Gerar campos para variáveis
+                const variablesContainer = document.getElementById('variablesContainer');
+                
+                if (variables && variables.length > 0) {
+                    let html = '';
+                    
+                    variables.forEach(variable => {
+                        html += `
+                            <div class="mb-3">
+                                <label for="var_${variable}" class="form-label">${formatVariableName(variable)}</label>
+                                <input type="text" class="form-control" id="var_${variable}" data-variable="${variable}" required>
+                            </div>
+                        `;
+                    });
+                    
+                    variablesContainer.innerHTML = html;
+                } else {
+                    variablesContainer.innerHTML = '<p class="text-center">Este template não possui variáveis para preencher.</p>';
+                }
+            } catch (error) {
+                console.error('Erro ao carregar template:', error);
+                showAlert('Erro ao carregar template. Por favor, tente novamente.', 'danger');
+            }
+        }
+
+        // Função para formatar nome de variável
+        function formatVariableName(variable) {
+            // Converter snake_case ou camelCase para palavras separadas
+            return variable
+                .replace(/_/g, ' ')
+                .replace(/([A-Z])/g, ' $1')
+                .replace(/^\w/, c => c.toUpperCase());
+        }
+
+        // Função para mostrar alertas
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.setAttribute('role', 'alert');
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            const container = document.querySelector('.container-fluid');
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            // Auto-fechar após 5 segundos
+            setTimeout(() => {
+                alertDiv.classList.remove('show');
+                setTimeout(() => alertDiv.remove(), 150);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

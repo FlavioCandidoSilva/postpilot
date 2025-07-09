@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações - PostPilot</title>
+    <style>
+        body {
+            font-family: 'Figtree', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8fafc;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        header {
+            background-color: #4f46e5;
+            color: white;
+            padding: 1rem 0;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem;
+            color: #4f46e5;
+        }
+        .settings-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+        }
+        .settings-nav {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+        .settings-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .settings-nav li {
+            margin-bottom: 0.5rem;
+        }
+        .settings-nav a {
+            display: block;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #4b5563;
+        }
+        .settings-nav a:hover {
+            background-color: #f3f4f6;
+        }
+        .settings-nav a.active {
+            background-color: #e0e7ff;
+            color: #4f46e5;
+            font-weight: 500;
+        }
+        .settings-content {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+        .primary-button {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .secondary-button {
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .danger-button {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        .subscription-info {
+            background-color: #e0e7ff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .subscription-info h3 {
+            margin-top: 0;
+            color: #4f46e5;
+        }
+        .plan-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .plan-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .plan-card.active {
+            border-color: #4f46e5;
+        }
+        .plan-card h3 {
+            margin-top: 0;
+            color: #4f46e5;
+        }
+        .plan-price {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        .plan-features {
+            text-align: left;
+            margin: 1.5rem 0;
+        }
+        .plan-features li {
+            margin-bottom: 0.5rem;
+        }
+        .user-menu {
+            position: relative;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #818cf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">PostPilot</a>
+                <nav>
+                    <ul>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="/posts">Postagens</a></li>
+                        <li><a href="/posts/calendar">Calendário</a></li>
+                        <li><a href="/reports">Relatórios</a></li>
+                        <li><a href="/settings">Configurações</a></li>
+                    </ul>
+                </nav>
+                <div class="user-menu">
+                    <div class="user-avatar">U</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Configurações</h1>
+        
+        <div class="settings-container">
+            <div class="settings-nav">
+                <ul>
+                    <li><a href="#" class="active">Perfil</a></li>
+                    <li><a href="#">Assinatura</a></li>
+                    <li><a href="#">Preferências</a></li>
+                    <li><a href="#">Notificações</a></li>
+                    <li><a href="#">Segurança</a></li>
+                    <li><a href="#">Integrações</a></li>
+                </ul>
+            </div>
+            
+            <div class="settings-content">
+                <h2>Perfil</h2>
+                
+                <div class="subscription-info">
+                    <h3>Plano Pro</h3>
+                    <p>Seu plano atual permite postagens ilimitadas e acesso a todas as funcionalidades.</p>
+                    <p>Validade: 24/05/2025</p>
+                </div>
+                
+                <form>
+                    <div class="form-group">
+                        <label for="name">Nome</label>
+                        <input type="text" id="name" value="Usuário Exemplo">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" value="usuario@exemplo.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="company">Empresa</label>
+                        <input type="text" id="company" value="Empresa Exemplo">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="position">Cargo</label>
+                        <input type="text" id="position" value="Gerente de Marketing">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="timezone">Fuso Horário</label>
+                        <select id="timezone">
+                            <option value="America/Sao_Paulo">América/São Paulo (GMT-3)</option>
+                            <option value="America/New_York">América/Nova York (GMT-4)</option>
+                            <option value="Europe/London">Europa/Londres (GMT+1)</option>
+                            <option value="Europe/Lisbon">Europa/Lisboa (GMT+1)</option>
+                            <option value="Asia/Tokyo">Ásia/Tóquio (GMT+9)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="language">Idioma</label>
+                        <select id="language">
+                            <option value="pt-BR">Português (Brasil)</option>
+                            <option value="en-US">Inglês (EUA)</option>
+                            <option value="es">Espanhol</option>
+                            <option value="fr">Francês</option>
+                        </select>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button type="submit" class="button primary-button">Salvar Alterações</button>
+                    </div>
+                </form>
+                
+                <h2>Preferências de Postagem</h2>
+                
+                <form>
+                    <div class="form-group">
+                        <label for="default-platform">Plataforma Padrão</label>
+                        <select id="default-platform">
+                            <option value="linkedin">LinkedIn</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="default-tone">Tom de Conteúdo Padrão</label>
+                        <select id="default-tone">
+                            <option value="professional">Profissional</option>
+                            <option value="casual">Casual</option>
+                            <option value="inspirational">Inspirador</option>
+                            <option value="educational">Educativo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="notification-email" checked>
+                            <label for="notification-email">Receber notificações por e-mail sobre postagens agendadas</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="auto-suggest" checked>
+                            <label for="auto-suggest">Sugerir automaticamente horários ideais para postagens</label>
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button type="submit" class="button primary-button">Salvar Preferências</button>
+                    </div>
+                </form>
+                
+                <h2>Assinatura</h2>
+                
+                <div class="plan-options">
+                    <div class="plan-card">
+                        <h3>Plano Free</h3>
+                        <div class="plan-price">R$ 0</div>
+                        <p>Para usuários iniciantes</p>
+                        <ul class="plan-features">
+                            <li>Até 5 postagens agendadas por mês</li>
+                            <li>Acesso limitado a templates de IA</li>
+                            <li>Calendário básico</li>
+                            <li>Sem relatórios detalhados</li>
+                        </ul>
+                        <button class="button secondary-button">Downgrade para Free</button>
+                    </div>
+                    
+                    <div class="plan-card active">
+                        <h3>Plano Pro</h3>
+                        <div class="plan-price">R$ 49/mês</div>
+                        <p>Para profissionais e empresas</p>
+                        <ul class="plan-features">
+                            <li>Postagens ilimitadas</li>
+                            <li>Acesso completo a templates de IA</li>
+                            <li>Calendário avançado</li>
+                            <li>Relatórios detalhados de engajamento</li>
+                            <li>Sugestão de horários ideais</li>
+                        </ul>
+                        <button class="button primary-button">Seu Plano Atual</button>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <button class="button danger-button">Cancelar Assinatura</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

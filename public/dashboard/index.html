@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - PostPilot</title>
+    <style>
+        body {
+            font-family: 'Figtree', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8fafc;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        header {
+            background-color: #4f46e5;
+            color: white;
+            padding: 1rem 0;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem;
+            color: #4f46e5;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .stat-card h3 {
+            margin-top: 0;
+            color: #4f46e5;
+        }
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+        .upcoming-posts, .engagement-data {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table th, table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        table th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+        .status-draft {
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+        .status-ready {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .status-published {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .plan-info {
+            background-color: #e0e7ff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .plan-info h3 {
+            margin-top: 0;
+            color: #4f46e5;
+        }
+        .progress-bar {
+            height: 10px;
+            background-color: #e5e7eb;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background-color: #4f46e5;
+            border-radius: 5px;
+            width: 60%;
+        }
+        .chart {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            height: 200px;
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .chart-bar {
+            position: absolute;
+            bottom: 0;
+            width: 8%;
+            background-color: #4f46e5;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+        .user-menu {
+            position: relative;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #818cf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 0;
+            min-width: 200px;
+            display: none;
+        }
+        .user-dropdown.active {
+            display: block;
+        }
+        .user-dropdown a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #1f2937;
+            text-decoration: none;
+        }
+        .user-dropdown a:hover {
+            background-color: #f3f4f6;
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">PostPilot</a>
+                <nav>
+                    <ul>
+                        <li><a href="/dashboard/">Dashboard</a></li>
+                        <li><a href="/posts/">Postagens</a></li>
+                        <li><a href="/posts/calendar.html">Calendário</a></li>
+                        <li><a href="/reports/">Relatórios</a></li>
+                        <li><a href="/settings/">Configurações</a></li>
+                    </ul>
+                </nav>
+                <div class="user-menu">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="/settings/">Perfil</a>
+                        <a href="/settings/">Configurações</a>
+                        <a href="#" id="logout-link">Sair</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Dashboard</h1>
+        
+        <div id="loading" class="loading">Carregando dados...</div>
+        
+        <div id="dashboard-content" style="display: none;">
+            <div class="plan-info" id="plan-info">
+                <!-- Conteúdo do plano será inserido aqui -->
+            </div>
+
+            <h2>Estatísticas</h2>
+            <div class="dashboard-grid" id="stats-grid">
+                <!-- Estatísticas serão inseridas aqui -->
+            </div>
+
+            <div class="upcoming-posts">
+                <h2>Próximas Postagens</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                            <th>Plataforma</th>
+                        </tr>
+                    </thead>
+                    <tbody id="upcoming-posts-table">
+                        <!-- Próximas postagens serão inseridas aqui -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="engagement-data">
+                <h2>Dados de Engajamento</h2>
+                <div class="dashboard-grid" id="engagement-grid">
+                    <!-- Dados de engajamento serão inseridos aqui -->
+                </div>
+                
+                <h3>Tendências de Desempenho</h3>
+                <div class="chart" id="performance-chart">
+                    <!-- Gráfico de desempenho será inserido aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/build/js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se o usuário está autenticado
+            if (!api.isAuthenticated()) {
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            // Configurar o avatar do usuário
+            const user = api.getCurrentUser();
+            const userAvatar = document.getElementById('user-avatar');
+            if (user && user.name) {
+                userAvatar.textContent = user.name.charAt(0);
+            }
+            
+            // Configurar o dropdown do usuário
+            userAvatar.addEventListener('click', function() {
+                const dropdown = document.getElementById('user-dropdown');
+                dropdown.classList.toggle('active');
+            });
+            
+            // Configurar o link de logout
+            document.getElementById('logout-link').addEventListener('click', async function(e) {
+                e.preventDefault();
+                try {
+                    await api.auth.logout();
+                    window.location.href = '/login.html';
+                } catch (error) {
+                    console.error('Erro ao fazer logout:', error);
+                }
+            });
+            
+            // Carregar dados do dashboard
+            loadDashboardData();
+        });
+        
+        async function loadDashboardData() {
+            try {
+                // Mostrar loading
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('dashboard-content').style.display = 'none';
+                
+                // Carregar dados do dashboard
+                const [statsData, upcomingPosts, engagementData, subscriptionInfo] = await Promise.all([
+                    api.dashboard.getStats(),
+                    api.dashboard.getUpcomingPosts(),
+                    api.dashboard.getEngagementData(),
+                    api.subscription.getInfo()
+                ]);
+                
+                // Preencher informações do plano
+                renderPlanInfo(subscriptionInfo);
+                
+                // Preencher estatísticas
+                renderStats(statsData);
+                
+                // Preencher próximas postagens
+                renderUpcomingPosts(upcomingPosts);
+                
+                // Preencher dados de engajamento
+                renderEngagementData(engagementData);
+                
+                // Esconder loading e mostrar conteúdo
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('dashboard-content').style.display = 'block';
+            } catch (error) {
+                console.error('Erro ao carregar dados do dashboard:', error);
+                document.getElementById('loading').textContent = 'Erro ao carregar dados. Por favor, tente novamente.';
+            }
+        }
+        
+        function renderPlanInfo(planInfo) {
+            const planInfoElement = document.getElementById('plan-info');
+            
+            // Simulação de dados do plano
+            const planData = planInfo || {
+                name: 'Pro',
+                is_pro: true,
+                expires_at: '24/05/2025',
+                posts_limit: 'Ilimitado',
+                posts_used: null
+            };
+            
+            let planHtml = `
+                <h3>Plano ${planData.name}</h3>
+                <p>Seu plano atual permite ${planData.posts_limit === 'Ilimitado' ? 'postagens ilimitadas' : planData.posts_limit + ' postagens por mês'} e acesso a todas as funcionalidades.</p>
+            `;
+            
+            if (planData.expires_at) {
+                planHtml += `<p>Validade: ${planData.expires_at}</p>`;
+            }
+            
+            if (planData.posts_limit !== 'Ilimitado' && planData.posts_used !== null) {
+                const percentUsed = (planData.posts_used / parseInt(planData.posts_limit)) * 100;
+                planHtml += `
+                    <p>Postagens utilizadas: ${planData.posts_used}/${planData.posts_limit}</p>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" style="width: ${percentUsed}%;"></div>
+                    </div>
+                `;
+            }
+            
+            planInfoElement.innerHTML = planHtml;
+        }
+        
+        function renderStats(stats) {
+            const statsGrid = document.getElementById('stats-grid');
+            
+            // Simulação de estatísticas
+            const statsData = stats || {
+                total_posts: 42,
+                published_posts: 28,
+                scheduled_posts: 8,
+                draft_posts: 6
+            };
+            
+            statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <h3>Total de Postagens</h3>
+                    <div class="number">${statsData.total_posts}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Publicadas</h3>
+                    <div class="number">${statsData.published_posts}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Agendadas</h3>
+                    <div class="number">${statsData.scheduled_posts}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Rascunhos</h3>
+                    <div class="number">${statsData.draft_posts}</div>
+                </div>
+            `;
+        }
+        
+        function renderUpcomingPosts(upcomingPosts) {
+            const upcomingPostsTable = document.getElementById('upcoming-posts-table');
+            
+            // Simulação de próximas postagens
+            const postsData = upcomingPosts || [
+                {
+                    title: 'Tendências de Marketing Digital para 2025',
+                    scheduled_at: '2025-04-25 09:00:00',
+                    status: 'pronto',
+                    platform: 'linkedin'
+                },
+                {
+                    title: 'Como a IA está transformando o mercado de trabalho',
+                    scheduled_at: '2025-04-26 12:00:00',
+                    status: 'pronto',
+                    platform: 'linkedin'
+                },
+                {
+                    title: '5 dicas para aumentar sua produtividade',
+                    scheduled_at: '2025-04-28 17:00:00',
+                    status: 'pronto',
+                    platform: 'linkedin'
+                }
+            ];
+            
+            if (postsData.length === 0) {
+                upcomingPostsTable.innerHTML = '<tr><td colspan="4" style="text-align: center;">Nenhuma postagem agendada.</td></tr>';
+                return;
+            }
+            
+            let tableHtml = '';
+            
+            postsData.forEach(post => {
+                const date = new Date(post.scheduled_at);
+                const formattedDate = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                
+                let statusClass = '';
+                switch (post.status) {
+                    case 'rascunho':
+                        statusClass = 'status-draft';
+                        break;
+                    case 'pronto':
+                        statusClass = 'status-ready';
+                        break;
+                    case 'publicado':
+                        statusClass = 'status-published';
+                        break;
+                }
+                
+                tableHtml += `
+                    <tr>
+                        <td>${post.title}</td>
+                        <td>${formattedDate}</td>
+                        <td><span class="status-badge ${statusClass}">${post.status.charAt(0).toUpperCase() + post.status.slice(1)}</span></td>
+                        <td>${post.platform.charAt(0).toUpperCase() + post.platform.slice(1)}</td>
+                    </tr>
+                `;
+            });
+            
+            upcomingPostsTable.innerHTML = tableHtml;
+        }
+        
+        function renderEngagementData(engagementData) {
+            const engagementGrid = document.getElementById('engagement-grid');
+            const performanceChart = document.getElementById('performance-chart');
+            
+            // Simulação de dados de engajamento
+            const data = engagementData || {
+                impressions: {
+                    total: 3245,
+                    change: 12
+                },
+                likes: {
+                    total: 287,
+                    change: 8
+                },
+                comments: {
+                    total: 54,
+                    change: 15
+                },
+                shares: {
+                    total: 23,
+                    change: -5
+                }
+            };
+            
+            engagementGrid.innerHTML = `
+                <div class="stat-card">
+                    <h3>Impressões</h3>
+                    <div class="number">${data.impressions.total}</div>
+                    <span style="color: ${data.impressions.change >= 0 ? 'green' : 'red'};">${data.impressions.change >= 0 ? '+' : ''}${data.impressions.change}%</span>
+                </div>
+                <div class="stat-card">
+                    <h3>Curtidas</h3>
+                    <div class="number">${data.likes.total}</div>
+                    <span style="color: ${data.likes.change >= 0 ? 'green' : 'red'};">${data.likes.change >= 0 ? '+' : ''}${data.likes.change}%</span>
+                </div>
+                <div class="stat-card">
+                    <h3>Comentários</h3>
+                    <div class="number">${data.comments.total}</div>
+                    <span style="color: ${data.comments.change >= 0 ? 'green' : 'red'};">${data.comments.change >= 0 ? '+' : ''}${data.comments.change}%</span>
+                </div>
+                <div class="stat-card">
+                    <h3>Compartilhamentos</h3>
+                    <div class="number">${data.shares.total}</div>
+                    <span style="color: ${data.shares.change >= 0 ? 'green' : 'red'};">${data.shares.change >= 0 ? '+' : ''}${data.shares.change}%</span>
+                </div>
+            `;
+            
+            // Simulação de gráfico de desempenho
+            let chartHtml = '';
+            
+            // Criar barras do gráfico
+            const heights = [60, 75, 45, 80, 65, 90, 70, 85, 75, 95];
+            
+            for (let i = 0; i < heights.length; i++) {
+                const left = 4 + (i * 10);
+                chartHtml += `<div class="chart-bar" style="left: ${left}%; height: ${heights[i]}%;"></div>`;
+            }
+            
+            performanceChart.innerHTML = chartHtml;
+        }
+    </script>
+</body>
+</html>

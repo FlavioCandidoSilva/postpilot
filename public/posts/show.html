@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizar Postagem - PostPilot</title>
+    <style>
+        body {
+            font-family: 'Figtree', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8fafc;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        header {
+            background-color: #4f46e5;
+            color: white;
+            padding: 1rem 0;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .post-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 1rem;
+        }
+        .post-title {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: #1f2937;
+        }
+        .post-meta {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        .post-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .button {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+        .primary-button {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .secondary-button {
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .danger-button {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        .post-content {
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        .post-details {
+            background-color: #f9fafb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .detail-item {
+            display: flex;
+            margin-bottom: 0.75rem;
+        }
+        .detail-label {
+            font-weight: 600;
+            width: 150px;
+            color: #4b5563;
+        }
+        .detail-value {
+            flex: 1;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+        .status-draft {
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+        .status-ready {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .status-published {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            background-color: #e0e7ff;
+            color: #4f46e5;
+        }
+        .user-menu {
+            position: relative;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #818cf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 0;
+            min-width: 200px;
+            display: none;
+            z-index: 10;
+        }
+        .user-dropdown.active {
+            display: block;
+        }
+        .user-dropdown a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #1f2937;
+            text-decoration: none;
+        }
+        .user-dropdown a:hover {
+            background-color: #f3f4f6;
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: #6b7280;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .modal-header h2 {
+            margin: 0;
+        }
+        .modal-close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">PostPilot</a>
+                <nav>
+                    <ul>
+                        <li><a href="/dashboard/">Dashboard</a></li>
+                        <li><a href="/posts/">Postagens</a></li>
+                        <li><a href="/posts/calendar.html">Calendário</a></li>
+                        <li><a href="/reports/">Relatórios</a></li>
+                        <li><a href="/settings/">Configurações</a></li>
+                    </ul>
+                </nav>
+                <div class="user-menu">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="/settings/">Perfil</a>
+                        <a href="/settings/">Configurações</a>
+                        <a href="#" id="logout-link">Sair</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="loading" class="loading">Carregando postagem...</div>
+        
+        <div id="post-container" class="post-container" style="display: none;">
+            <div class="post-header">
+                <div>
+                    <h1 class="post-title" id="post-title">Título da Postagem</h1>
+                    <div class="post-meta" id="post-meta">Criado em 24/04/2025</div>
+                </div>
+                <div class="post-actions">
+                    <a href="#" class="button primary-button" id="edit-button">Editar</a>
+                    <a href="#" class="button danger-button" id="delete-button">Excluir</a>
+                    <a href="/posts/" class="button secondary-button">Voltar</a>
+                </div>
+            </div>
+            
+            <div class="post-details">
+                <div class="detail-item">
+                    <div class="detail-label">Status:</div>
+                    <div class="detail-value" id="post-status">
+                        <span class="status-badge status-ready">Pronto</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Plataforma:</div>
+                    <div class="detail-value" id="post-platform">LinkedIn</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Categoria:</div>
+                    <div class="detail-value" id="post-category">Marketing Digital</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Tags:</div>
+                    <div class="detail-value">
+                        <div class="tags-container" id="post-tags">
+                            <span class="tag">marketing</span>
+                            <span class="tag">digital</span>
+                            <span class="tag">tendências</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="detail-item" id="scheduled-container">
+                    <div class="detail-label">Agendado para:</div>
+                    <div class="detail-value" id="post-scheduled">25/04/2025 09:00</div>
+                </div>
+                <div class="detail-item" id="published-container" style="display: none;">
+                    <div class="detail-label">Publicado em:</div>
+                    <div class="detail-value" id="post-published">25/04/2025 09:00</div>
+                </div>
+                <div class="detail-item" id="ai-generated-container" style="display: none;">
+                    <div class="detail-label">Gerado por IA:</div>
+                    <div class="detail-value" id="post-ai-generated">Sim</div>
+                </div>
+            </div>
+            
+            <div class="post-content" id="post-content">
+                <!-- Conteúdo da postagem será inserido aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação de exclusão -->
+    <div class="modal" id="delete-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirmar Exclusão</h2>
+                <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+            <p>Tem certeza que deseja excluir esta postagem? Esta ação não pode ser desfeita.</p>
+            <div class="modal-footer">
+                <button class="button secondary-button" id="cancel-delete">Cancelar</button>
+                <button class="button danger-button" id="confirm-delete">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/build/js/api.js"></script>
+    <script src="/build/js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar autenticação
+            if (!api.isAuthenticated()) {
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            // Elementos DOM
+            const loadingElement = document.getElementById('loading');
+            const postContainer = document.getElementById('post-container');
+            const postTitle = document.getElementById('post-title');
+            const postMeta = document.getElementById('post-meta');
+            const postStatus = document.getElementById('post-status');
+            const postPlatform = document.getElementById('post-platform');
+            const postCategory = document.getElementById('post-category');
+            const postTags = document.getElementById('post-tags');
+            const postContent = document.getElementById('post-content');
+            const postScheduled = document.getElementById('post-scheduled');
+            const postPublished = document.getElementById('post-published');
+            const postAiGenerated = document.getElementById('post-ai-generated');
+            const scheduledContainer = document.getElementById('scheduled-container');
+            const publishedContainer = document.getElementById('published-container');
+            const aiGeneratedContainer = document.getElementById('ai-generated-container');
+            const editButton = document.getElementById('edit-button');
+            const deleteButton = document.getElementById('delete-button');
+            const deleteModal = document.getElementById('delete-modal');
+            const closeModalButton = document.getElementById('close-modal');
+            const cancelDeleteButton = document.getElementById('cancel-delete');
+            const confirmDeleteButton = document.getElementById('confirm-delete');
+            
+            // Obter ID da postagem da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('id');
+            
+            if (!postId) {
+                loadingElement.textContent = 'ID da postagem não fornecido.';
+                return;
+            }
+            
+            // Carregar dados da postagem
+            loadPost(postId);
+            
+            // Event listeners
+            editButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = `/posts/edit.html?id=${postId}`;
+            });
+            
+            deleteButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                openDeleteModal();
+            });
+            
+            closeModalButton.addEventListener('click', closeDeleteModal);
+            cancelDeleteButton.addEventListener('click', closeDeleteModal);
+            confirmDeleteButton.addEventListener('click', confirmDelete);
+            
+            // Funções
+            async function loadPost(id) {
+                try {
+                    // Mostrar loading
+                    loadingElement.style.display = 'block';
+                    postContainer.style.display = 'none';
+                    
+                    // Carregar postagem da API
+                    const response = await api.posts.get(id);
+                    const post = response.post;
+                    
+                    // Preencher dados da postagem
+                    postTitle.textContent = post.title;
+                    
+                    // Formatar data de criação
+                    const createdDate = new Date(post.created_at);
+                    postMeta.textContent = `Criado em ${createdDate.toLocaleDateString('pt-BR')}`;
+                    
+                    // Status
+                    let statusClass = '';
+                    switch (post.status) {
+                        case 'rascunho':
+                            statusClass = 'status-draft';
+                            break;
+                        case 'pronto':
+                            statusClass = 'status-ready';
+                            break;
+                        case 'publicado':
+                            statusClass = 'status-published';
+                            break;
+                    }
+                    const formattedStatus = post.status.charAt(0).toUpperCase() + post.status.slice(1);
+                    postStatus.innerHTML = `<span class="status-badge ${statusClass}">${formattedStatus}</span>`;
+                    
+                    // Plataforma
+                    postPlatform.textContent = post.platform.charAt(0).toUpperCase() + post.platform.slice(1);
+                    
+                    // Categoria
+                    postCategory.textContent = post.category ? post.category.name : 'Sem categoria';
+                    
+                    // Tags
+                    if (post.tags && post.tags.length > 0) {
+                        let tagsHtml = '';
+                        post.tags.forEach(tag => {
+                            tagsHtml += `<span class="tag">${tag.name}</span>`;
+                        });
+                        postTags.innerHTML = tagsHtml;
+                    } else {
+                        postTags.innerHTML = '<span>Sem tags</span>';
+                    }
+                    
+                    // Agendamento
+                    if (post.scheduled_at) {
+                        const scheduledDate = new Date(post.scheduled_at);
+                        postScheduled.textContent = scheduledDate.toLocaleDateString('pt-BR') + ' ' + 
+                                                   scheduledDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                        scheduledContainer.style.display = 'flex';
+                    } else {
+                        scheduledContainer.style.display = 'none';
+                    }
+                    
+                    // Publicação
+                    if (post.published_at) {
+                        const publishedDate = new Date(post.published_at);
+                        postPublished.textContent = publishedDate.toLocaleDateString('pt-BR') + ' ' + 
+                                                   publishedDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                        publishedContainer.style.display = 'flex';
+                    } else {
+                        publishedContainer.style.display = 'none';
+                    }
+                    
+                    // Gerado por IA
+                    if (post.ai_generated) {
+                        postAiGenerated.textContent = 'Sim';
+                        aiGeneratedContainer.style.display = 'flex';
+                    } else {
+                        aiGeneratedContainer.style.display = 'none';
+                    }
+                    
+                    // Conteúdo
+                    postContent.innerHTML = post.content.replace(/\n/g, '<br>');
+                    
+                    // Esconder loading e mostrar postagem
+                    loadingElement.style.display = 'none';
+                    postContainer.style.display = 'block';
+                } catch (error) {
+                    console.error('Erro ao carregar postagem:', error);
+                    loadingElement.textContent = 'Erro ao carregar postagem. Por favor, tente novamente.';
+                }
+            }
+            
+            function openDeleteModal() {
+                deleteModal.style.display = 'flex';
+            }
+            
+            function closeDeleteModal() {
+                deleteModal.style.display = 'none';
+            }
+            
+            async function confirmDelete() {
+                try {
+                    await api.posts.delete(postId);
+                    closeDeleteModal();
+                    window.location.href = '/posts/';
+                } catch (error) {
+                    console.error('Erro ao excluir postagem:', error);
+                    alert('Erro ao excluir postagem. Por favor, tente novamente.');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

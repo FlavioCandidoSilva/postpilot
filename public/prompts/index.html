@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Templates de Prompts - PostPilot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../build/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h3>PostPilot</h3>
+            </div>
+
+            <ul class="list-unstyled components">
+                <li>
+                    <a href="../dashboard/index.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="../posts/index.html"><i class="fas fa-file-alt"></i> Postagens</a>
+                </li>
+                <li>
+                    <a href="../posts/calendar.html"><i class="fas fa-calendar"></i> Calendário</a>
+                </li>
+                <li class="active">
+                    <a href="index.html"><i class="fas fa-lightbulb"></i> Templates de IA</a>
+                </li>
+                <li>
+                    <a href="../categories/index.html"><i class="fas fa-folder"></i> Categorias</a>
+                </li>
+                <li>
+                    <a href="../tags/index.html"><i class="fas fa-tags"></i> Tags</a>
+                </li>
+                <li>
+                    <a href="../reports/index.html"><i class="fas fa-chart-bar"></i> Relatórios</a>
+                </li>
+                <li>
+                    <a href="../settings/index.html"><i class="fas fa-cog"></i> Configurações</a>
+                </li>
+                <li>
+                    <a href="../subscription/index.html"><i class="fas fa-star"></i> Assinatura</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Page Content -->
+        <div id="content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fas fa-align-left"></i>
+                        <span>Menu</span>
+                    </button>
+                    <div class="d-flex">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user"></i> <span id="username">Usuário</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="../settings/index.html">Perfil</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" id="logout">Sair</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid">
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h2>Templates de Prompts de IA</h2>
+                        <p>Crie e gerencie templates personalizados para gerar conteúdo com IA.</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="create.html" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Novo Template
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="categoryFilter">Categoria</label>
+                                    <select class="form-control" id="categoryFilter">
+                                        <option value="all">Todas</option>
+                                        <option value="ideias">Ideias de Conteúdo</option>
+                                        <option value="publicacoes">Publicações</option>
+                                        <option value="analise">Análise de Conteúdo</option>
+                                        <option value="personalizado">Personalizado</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="typeFilter">Tipo</label>
+                                    <select class="form-control" id="typeFilter">
+                                        <option value="all">Todos</option>
+                                        <option value="default">Padrão</option>
+                                        <option value="custom">Personalizado</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="searchFilter">Buscar</label>
+                                    <input type="text" class="form-control" id="searchFilter" placeholder="Nome ou descrição...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de Templates -->
+                <div class="row" id="templatesList">
+                    <!-- Template Padrão 1 -->
+                    <div class="col-md-4 mb-4 template-card" data-category="ideias" data-type="default">
+                        <div class="card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary">Padrão</span>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-link" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="show.html?id=1"><i class="fas fa-eye"></i> Visualizar</a></li>
+                                        <li><a class="dropdown-item" href="use.html?id=1"><i class="fas fa-play"></i> Usar Template</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Ideias de Temas para LinkedIn</h5>
+                                <p class="card-text">Gera ideias originais de temas para publicações no LinkedIn, focadas em uma área específica.</p>
+                                <div class="template-meta">
+                                    <span class="badge bg-secondary">Ideias de Conteúdo</span>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="use.html?id=1" class="btn btn-sm btn-outline-primary">Usar Template</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Template Padrão 2 -->
+                    <div class="col-md-4 mb-4 template-card" data-category="publicacoes" data-type="default">
+                        <div class="card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary">Padrão</span>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-link" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="show.html?id=2"><i class="fas fa-eye"></i> Visualizar</a></li>
+                                        <li><a class="dropdown-item" href="use.html?id=2"><i class="fas fa-play"></i> Usar Template</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Publicação Estruturada</h5>
+                                <p class="card-text">Cria uma publicação completa para LinkedIn com título, introdução, desenvolvimento, conclusão e aprendizados.</p>
+                                <div class="template-meta">
+                                    <span class="badge bg-secondary">Publicações</span>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="use.html?id=2" class="btn btn-sm btn-outline-primary">Usar Template</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Template Padrão 3 -->
+                    <div class="col-md-4 mb-4 template-card" data-category="analise" data-type="default">
+                        <div class="card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary">Padrão</span>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-link" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="show.html?id=3"><i class="fas fa-eye"></i> Visualizar</a></li>
+                                        <li><a class="dropdown-item" href="use.html?id=3"><i class="fas fa-play"></i> Usar Template</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Análise de Tendências</h5>
+                                <p class="card-text">Analisa tendências emergentes em um setor específico e seu impacto no mercado.</p>
+                                <div class="template-meta">
+                                    <span class="badge bg-secondary">Análise de Conteúdo</span>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="use.html?id=3" class="btn btn-sm btn-outline-primary">Usar Template</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Template Personalizado (Exemplo) -->
+                    <div class="col-md-4 mb-4 template-card" data-category="personalizado" data-type="custom">
+                        <div class="card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span class="badge bg-success">Personalizado</span>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-link" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="show.html?id=4"><i class="fas fa-eye"></i> Visualizar</a></li>
+                                        <li><a class="dropdown-item" href="edit.html?id=4"><i class="fas fa-edit"></i> Editar</a></li>
+                                        <li><a class="dropdown-item" href="use.html?id=4"><i class="fas fa-play"></i> Usar Template</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="4"><i class="fas fa-trash"></i> Excluir</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Meu Template Personalizado</h5>
+                                <p class="card-text">Template personalizado para gerar conteúdo específico para minha área de atuação.</p>
+                                <div class="template-meta">
+                                    <span class="badge bg-secondary">Personalizado</span>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="use.html?id=4" class="btn btn-sm btn-outline-primary">Usar Template</a>
+                                <a href="edit.html?id=4" class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensagem de Nenhum Resultado -->
+                <div id="noResults" class="alert alert-info text-center d-none">
+                    Nenhum template encontrado com os filtros selecionados.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirmar Exclusão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Tem certeza que deseja excluir este template? Esta ação não pode ser desfeita.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Excluir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
+    <script src="../build/js/auth.js"></script>
+    <script src="../build/js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar autenticação
+            if (!api.isAuthenticated()) {
+                window.location.href = '../login.html';
+                return;
+            }
+
+            // Exibir nome do usuário
+            const user = api.getCurrentUser();
+            if (user) {
+                document.getElementById('username').textContent = user.name;
+            }
+
+            // Logout
+            document.getElementById('logout').addEventListener('click', async function(e) {
+                e.preventDefault();
+                try {
+                    await api.auth.logout();
+                    window.location.href = '../login.html';
+                } catch (error) {
+                    console.error('Erro ao fazer logout:', error);
+                    alert('Erro ao fazer logout. Por favor, tente novamente.');
+                }
+            });
+
+            // Toggle sidebar
+            document.getElementById('sidebarCollapse').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+
+            // Carregar templates da API
+            loadTemplates();
+
+            // Filtros
+            document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+            document.getElementById('typeFilter').addEventListener('change', applyFilters);
+            document.getElementById('searchFilter').addEventListener('input', applyFilters);
+
+            // Modal de exclusão
+            let templateIdToDelete = null;
+            
+            document.getElementById('templatesList').addEventListener('click', function(e) {
+                const deleteLink = e.target.closest('[data-bs-target="#deleteModal"]');
+                if (deleteLink) {
+                    templateIdToDelete = deleteLink.getAttribute('data-id');
+                }
+            });
+            
+            document.getElementById('confirmDelete').addEventListener('click', async function() {
+                if (templateIdToDelete) {
+                    try {
+                        await api.prompts.delete(templateIdToDelete);
+                        
+                        // Fechar modal e recarregar templates
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                        modal.hide();
+                        
+                        // Remover o template da lista
+                        const templateCard = document.querySelector(`.template-card[data-id="${templateIdToDelete}"]`);
+                        if (templateCard) {
+                            templateCard.remove();
+                        }
+                        
+                        // Mostrar mensagem de sucesso
+                        showAlert('Template excluído com sucesso!', 'success');
+                        
+                        // Recarregar templates
+                        loadTemplates();
+                    } catch (error) {
+                        console.error('Erro ao excluir template:', error);
+                        showAlert('Erro ao excluir template. Por favor, tente novamente.', 'danger');
+                    }
+                }
+            });
+        });
+
+        // Função para carregar templates da API
+        async function loadTemplates() {
+            try {
+                const response = await api.prompts.getAll();
+                const templates = response.templates;
+                const templatesList = document.getElementById('templatesList');
+                
+                // Limpar lista atual
+                templatesList.innerHTML = '';
+                
+                if (templates && templates.length > 0) {
+                    templates.forEach(template => {
+                        const templateCard = createTemplateCard(template);
+                        templatesList.appendChild(templateCard);
+                    });
+                } else {
+                    document.getElementById('noResults').classList.remove('d-none');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar templates:', error);
+                showAlert('Erro ao carregar templates. Por favor, tente novamente.', 'danger');
+            }
+        }
+
+        // Função para criar card de template
+        function createTemplateCard(template) {
+            const col = document.createElement('div');
+            col.className = 'col-md-4 mb-4 template-card';
+            col.setAttribute('data-category', template.category);
+            col.setAttribute('data-type', template.is_default ? 'default' : 'custom');
+            col.setAttribute('data-id', template.id);
+            
+            const badgeType = template.is_default ? 'primary' : 'success';
+            const badgeText = template.is_default ? 'Padrão' : 'Personalizado';
+            
+            let actionsMenu = `
+                <li><a class="dropdown-item" href="show.html?id=${template.id}"><i class="fas fa-eye"></i> Visualizar</a></li>
+                <li><a class="dropdown-item" href="use.html?id=${template.id}"><i class="fas fa-play"></i> Usar Template</a></li>
+            `;
+            
+            if (!template.is_default) {
+                actionsMenu += `
+                    <li><a class="dropdown-item" href="edit.html?id=${template.id}"><i class="fas fa-edit"></i> Editar</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${template.id}"><i class="fas fa-trash"></i> Excluir</a></li>
+                `;
+            }
+            
+            col.innerHTML = `
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="badge bg-${badgeType}">${badgeText}</span>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-link" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                ${actionsMenu}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">${template.name}</h5>
+                        <p class="card-text">${template.description || 'Sem descrição'}</p>
+                        <div class="template-meta">
+                            <span class="badge bg-secondary">${template.category}</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="use.html?id=${template.id}" class="btn btn-sm btn-outline-primary">Usar Template</a>
+                        ${!template.is_default ? `<a href="edit.html?id=${template.id}" class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></a>` : ''}
+                    </div>
+                </div>
+            `;
+            
+            return col;
+        }
+
+        // Função para aplicar filtros
+        function applyFilters() {
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            const searchFilter = document.getElementById('searchFilter').value.toLowerCase();
+            
+            const templateCards = document.querySelectorAll('.template-card');
+            let visibleCount = 0;
+            
+            templateCards.forEach(card => {
+                const category = card.getAttribute('data-category');
+                const type = card.getAttribute('data-type');
+                const title = card.querySelector('.card-title').textContent.toLowerCase();
+                const description = card.querySelector('.card-text').textContent.toLowerCase();
+                
+                const matchesCategory = categoryFilter === 'all' || category === categoryFilter;
+                const matchesType = typeFilter === 'all' || type === typeFilter;
+                const matchesSearch = searchFilter === '' || 
+                                     title.includes(searchFilter) || 
+                                     description.includes(searchFilter);
+                
+                if (matchesCategory && matchesType && matchesSearch) {
+                    card.classList.remove('d-none');
+                    visibleCount++;
+                } else {
+                    card.classList.add('d-none');
+                }
+            });
+            
+            // Mostrar ou esconder mensagem de nenhum resultado
+            if (visibleCount === 0) {
+                document.getElementById('noResults').classList.remove('d-none');
+            } else {
+                document.getElementById('noResults').classList.add('d-none');
+            }
+        }
+
+        // Função para mostrar alertas
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.setAttribute('role', 'alert');
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            const container = document.querySelector('.container-fluid');
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            // Auto-fechar após 5 segundos
+            setTimeout(() => {
+                alertDiv.classList.remove('show');
+                setTimeout(() => alertDiv.remove(), 150);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

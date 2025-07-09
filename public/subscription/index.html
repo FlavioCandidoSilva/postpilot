@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assinatura - PostPilot</title>
+    <style>
+        body {
+            font-family: 'Figtree', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8fafc;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        header {
+            background-color: #4f46e5;
+            color: white;
+            padding: 1rem 0;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .plans-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .plan-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        .plan-card.popular::before {
+            content: "Mais Popular";
+            position: absolute;
+            top: 1.5rem;
+            right: -4rem;
+            background-color: #4f46e5;
+            color: white;
+            padding: 0.5rem 4rem;
+            transform: rotate(45deg);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1f2937;
+        }
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #4f46e5;
+            margin-bottom: 1rem;
+        }
+        .plan-price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #6b7280;
+        }
+        .plan-description {
+            margin-bottom: 1.5rem;
+            color: #4b5563;
+        }
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 2rem 0;
+            flex-grow: 1;
+        }
+        .plan-features li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+        .plan-features li::before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        .plan-features li.not-included {
+            color: #9ca3af;
+        }
+        .plan-features li.not-included::before {
+            content: "✗";
+            color: #ef4444;
+        }
+        .button {
+            display: inline-block;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            text-align: center;
+        }
+        .primary-button {
+            background-color: #4f46e5;
+            color: white;
+            width: 100%;
+        }
+        .primary-button:hover {
+            background-color: #4338ca;
+        }
+        .secondary-button {
+            background-color: #f3f4f6;
+            color: #1f2937;
+            width: 100%;
+        }
+        .secondary-button:hover {
+            background-color: #e5e7eb;
+        }
+        .current-plan {
+            background-color: #d1fae5;
+            color: #065f46;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        .user-menu {
+            position: relative;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #818cf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 0;
+            min-width: 200px;
+            display: none;
+            z-index: 10;
+        }
+        .user-dropdown.active {
+            display: block;
+        }
+        .user-dropdown a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #1f2937;
+            text-decoration: none;
+        }
+        .user-dropdown a:hover {
+            background-color: #f3f4f6;
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: #6b7280;
+        }
+        .error-message {
+            color: #ef4444;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        .success-message {
+            color: #10b981;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .modal-header h2 {
+            margin: 0;
+        }
+        .modal-close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">PostPilot</a>
+                <nav>
+                    <ul>
+                        <li><a href="/dashboard/">Dashboard</a></li>
+                        <li><a href="/posts/">Postagens</a></li>
+                        <li><a href="/posts/calendar.html">Calendário</a></li>
+                        <li><a href="/reports/">Relatórios</a></li>
+                        <li><a href="/settings/">Configurações</a></li>
+                    </ul>
+                </nav>
+                <div class="user-menu">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="/settings/">Perfil</a>
+                        <a href="/settings/">Configurações</a>
+                        <a href="#" id="logout-link">Sair</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Planos de Assinatura</h1>
+        
+        <div id="loading" class="loading">Carregando informações de assinatura...</div>
+        
+        <div id="error-message" class="error-message" style="display: none;"></div>
+        <div id="success-message" class="success-message" style="display: none;"></div>
+        
+        <div id="plans-container" class="plans-container" style="display: none;">
+            <div class="plan-card">
+                <div class="plan-name">Free</div>
+                <div class="plan-price">R$ 0 <span>/mês</span></div>
+                <p class="plan-description">Perfeito para começar a organizar suas postagens no LinkedIn.</p>
+                <ul class="plan-features">
+                    <li>Até 10 postagens por mês</li>
+                    <li>Agendamento básico</li>
+                    <li>Organização com tags e categorias</li>
+                    <li>Calendário de publicações</li>
+                    <li class="not-included">Geração de conteúdo com IA</li>
+                    <li class="not-included">Sugestões de horários ideais</li>
+                    <li class="not-included">Relatórios avançados</li>
+                    <li class="not-included">Suporte prioritário</li>
+                </ul>
+                <button class="button primary-button" id="select-free-plan">Selecionar Plano</button>
+            </div>
+            
+            <div class="plan-card popular">
+                <div class="plan-name">Pro</div>
+                <div class="plan-price">R$ 49,90 <span>/mês</span></div>
+                <p class="plan-description">Ideal para profissionais e empresas que desejam maximizar seu alcance.</p>
+                <ul class="plan-features">
+                    <li>Postagens ilimitadas</li>
+                    <li>Agendamento avançado</li>
+                    <li>Organização com tags e categorias</li>
+                    <li>Calendário de publicações</li>
+                    <li>Geração de conteúdo com IA</li>
+                    <li>Sugestões de horários ideais</li>
+                    <li>Relatórios avançados</li>
+                    <li>Suporte prioritário</li>
+                </ul>
+                <button class="button primary-button" id="select-pro-plan">Selecionar Plano</button>
+            </div>
+        </div>
+        
+        <div id="current-plan-info" style="display: none; margin-top: 2rem;">
+            <h2>Seu Plano Atual</h2>
+            <div class="plan-card">
+                <div id="current-plan-badge" class="current-plan">Plano Atual</div>
+                <div id="current-plan-name" class="plan-name">Free</div>
+                <div id="current-plan-price" class="plan-price">R$ 0 <span>/mês</span></div>
+                <p id="current-plan-description" class="plan-description">Perfeito para começar a organizar suas postagens no LinkedIn.</p>
+                <div id="current-plan-status" style="margin-bottom: 1rem;"></div>
+                <button class="button secondary-button" id="change-plan-button">Mudar de Plano</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação de mudança de plano -->
+    <div class="modal" id="confirm-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirmar Mudança de Plano</h2>
+                <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+            <p id="confirm-message">Tem certeza que deseja mudar para o plano <span id="new-plan-name">Pro</span>?</p>
+            <div class="modal-footer">
+                <button class="button secondary-button" id="cancel-change">Cancelar</button>
+                <button class="button primary-button" id="confirm-change">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/build/js/api.js"></script>
+    <script src="/build/js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar autenticação
+            if (!api.isAuthenticated()) {
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            // Elementos DOM
+            const loadingElement = document.getElementById('loading');
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+            const plansContainer = document.getElementById('plans-container');
+            const currentPlanInfo = document.getElementById('current-plan-info');
+            const currentPlanBadge = document.getElementById('current-plan-badge');
+            const currentPlanName = document.getElementById('current-plan-name');
+            const currentPlanPrice = document.getElementById('current-plan-price');
+            const currentPlanDescription = document.getElementById('current-plan-description');
+            const currentPlanStatus = document.getElementById('current-plan-status');
+            const changePlanButton = document.getElementById('change-plan-button');
+            const selectFreePlanButton = document.getElementById('select-free-plan');
+            const selectProPlanButton = document.getElementById('select-pro-plan');
+            const confirmModal = document.getElementById('confirm-modal');
+            const closeModalButton = document.getElementById('close-modal');
+            const cancelChangeButton = document.getElementById('cancel-change');
+            const confirmChangeButton = document.getElementById('confirm-change');
+            const newPlanNameSpan = document.getElementById('new-plan-name');
+            
+            // Variáveis globais
+            let currentUser = null;
+            let selectedPlan = null;
+            
+            // Carregar informações do usuário e assinatura
+            loadUserInfo();
+            
+            // Event listeners
+            selectFreePlanButton.addEventListener('click', () => selectPlan('free'));
+            selectProPlanButton.addEventListener('click', () => selectPlan('pro'));
+            changePlanButton.addEventListener('click', showPlans);
+            closeModalButton.addEventListener('click', closeModal);
+            cancelChangeButton.addEventListener('click', closeModal);
+            confirmChangeButton.addEventListener('click', confirmPlanChange);
+            
+            // Funções
+            async function loadUserInfo() {
+                try {
+                    // Mostrar loading
+                    loadingElement.style.display = 'block';
+                    errorMessage.style.display = 'none';
+                    successMessage.style.display = 'none';
+                    plansContainer.style.display = 'none';
+                    currentPlanInfo.style.display = 'none';
+                    
+                    // Obter informações do usuário
+                    currentUser = api.getCurrentUser();
+                    
+                    if (!currentUser) {
+                        throw new Error('Não foi possível obter informações do usuário.');
+                    }
+                    
+                    // Atualizar informações do plano atual
+                    updateCurrentPlanInfo();
+                    
+                    // Esconder loading e mostrar informações do plano atual
+                    loadingElement.style.display = 'none';
+                    currentPlanInfo.style.display = 'block';
+                } catch (error) {
+                    console.error('Erro ao carregar informações do usuário:', error);
+                    loadingElement.style.display = 'none';
+                    errorMessage.textContent = 'Erro ao carregar informações de assinatura. Por favor, tente novamente.';
+                    errorMessage.style.display = 'block';
+                }
+            }
+            
+            function updateCurrentPlanInfo() {
+                const plan = currentUser.subscription_plan || 'free';
+                
+                // Atualizar nome do plano
+                currentPlanName.textContent = plan === 'pro' ? 'Pro' : 'Free';
+                
+                // Atualizar preço
+                currentPlanPrice.innerHTML = plan === 'pro' ? 'R$ 49,90 <span>/mês</span>' : 'R$ 0 <span>/mês</span>';
+                
+                // Atualizar descrição
+                currentPlanDescription.textContent = plan === 'pro' 
+                    ? 'Ideal para profissionais e empresas que desejam maximizar seu alcance.'
+                    : 'Perfeito para começar a organizar suas postagens no LinkedIn.';
+                
+                // Atualizar status
+                if (plan === 'pro' && currentUser.subscription_status) {
+                    const status = currentUser.subscription_status;
+                    const expiresAt = currentUser.subscription_expires_at;
+                    
+                    if (status === 'active') {
+                        currentPlanStatus.innerHTML = `<div style="color: #10b981;">Assinatura ativa até ${formatDate(expiresAt)}</div>`;
+                    } else if (status === 'canceled') {
+                        currentPlanStatus.innerHTML = `<div style="color: #f59e0b;">Assinatura cancelada. Acesso Pro disponível até ${formatDate(expiresAt)}</div>`;
+                    } else if (status === 'expired') {
+                        currentPlanStatus.innerHTML = '<div style="color: #ef4444;">Assinatura expirada</div>';
+                    }
+                } else {
+                    currentPlanStatus.innerHTML = '';
+                }
+            }
+            
+            function formatDate(dateString) {
+                if (!dateString) return '';
+                
+                const date = new Date(dateString);
+                return date.toLocaleDateString('pt-BR');
+            }
+            
+            function showPlans() {
+                currentPlanInfo.style.display = 'none';
+                plansContainer.style.display = 'grid';
+                
+                // Atualizar botões de seleção de plano
+                const currentPlan = currentUser.subscription_plan || 'free';
+                
+                if (currentPlan === 'free') {
+                    selectFreePlanButton.textContent = 'Plano Atual';
+                    selectFreePlanButton.disabled = true;
+                    selectProPlanButton.textContent = 'Fazer Upgrade';
+                } else {
+                    selectFreePlanButton.textContent = 'Fazer Downgrade';
+                    selectProPlanButton.textContent = 'Plano Atual';
+                    selectProPlanButton.disabled = true;
+                }
+            }
+            
+            function selectPlan(plan) {
+                const currentPlan = currentUser.subscription_plan || 'free';
+                
+                if (plan === currentPlan) {
+                    return;
+                }
+                
+                selectedPlan = plan;
+                newPlanNameSpan.textContent = plan === 'pro' ? 'Pro' : 'Free';
+                
+                // Mostrar modal de confirmação
+                confirmModal.style.display = 'flex';
+            }
+            
+            function closeModal() {
+                confirmModal.style.display = 'none';
+                selectedPlan = null;
+            }
+            
+            async function confirmPlanChange() {
+                if (!selectedPlan) return;
+                
+                try {
+                    // Fechar modal
+                    closeModal();
+                    
+                    // Mostrar loading
+                    loadingElement.style.display = 'block';
+                    plansContainer.style.display = 'none';
+                    errorMessage.style.display = 'none';
+                    successMessage.style.display = 'none';
+                    
+                    // Chamar API para mudar plano
+                    await api.subscription.changePlan(selectedPlan);
+                    
+                    // Atualizar informações do usuário
+                    currentUser = api.getCurrentUser();
+                    
+                    // Atualizar informações do plano atual
+                    updateCurrentPlanInfo();
+                    
+                    // Mostrar mensagem de sucesso
+                    successMessage.textContent = `Plano alterado com sucesso para ${selectedPlan === 'pro' ? 'Pro' : 'Free'}.`;
+                    successMessage.style.display = 'block';
+                    
+                    // Esconder loading e mostrar informações do plano atual
+                    loadingElement.style.display = 'none';
+                    currentPlanInfo.style.display = 'block';
+                } catch (error) {
+                    console.error('Erro ao mudar plano:', error);
+                    
+                    // Esconder loading e mostrar mensagem de erro
+                    loadingElement.style.display = 'none';
+                    errorMessage.textContent = 'Erro ao mudar plano. Por favor, tente novamente.';
+                    errorMessage.style.display = 'block';
+                    plansContainer.style.display = 'grid';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

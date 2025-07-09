@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Postagem - PostPilot</title>
+    <style>
+        body {
+            font-family: 'Figtree', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8fafc;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        header {
+            background-color: #4f46e5;
+            color: white;
+            padding: 1rem 0;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #4b5563;
+        }
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+        .button {
+            display: inline-block;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+        }
+        .primary-button {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .primary-button:hover {
+            background-color: #4338ca;
+        }
+        .secondary-button {
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .secondary-button:hover {
+            background-color: #e5e7eb;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            background-color: #e0e7ff;
+            color: #4f46e5;
+        }
+        .tag-remove {
+            margin-left: 0.5rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .tag-input-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .tag-input {
+            flex: 1;
+        }
+        .add-tag-button {
+            padding: 0.5rem 1rem;
+        }
+        .error-message {
+            color: #ef4444;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+        .user-menu {
+            position: relative;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #818cf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 0;
+            min-width: 200px;
+            display: none;
+            z-index: 10;
+        }
+        .user-dropdown.active {
+            display: block;
+        }
+        .user-dropdown a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #1f2937;
+            text-decoration: none;
+        }
+        .user-dropdown a:hover {
+            background-color: #f3f4f6;
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: #6b7280;
+        }
+        .ai-tools {
+            background-color: #f9fafb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .ai-tools h2 {
+            margin-top: 0;
+            color: #4f46e5;
+            font-size: 1.25rem;
+        }
+        .ai-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .ai-form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        .ai-button {
+            background-color: #4f46e5;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .ai-button:hover {
+            background-color: #4338ca;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">PostPilot</a>
+                <nav>
+                    <ul>
+                        <li><a href="/dashboard/">Dashboard</a></li>
+                        <li><a href="/posts/">Postagens</a></li>
+                        <li><a href="/posts/calendar.html">Calendário</a></li>
+                        <li><a href="/reports/">Relatórios</a></li>
+                        <li><a href="/settings/">Configurações</a></li>
+                    </ul>
+                </nav>
+                <div class="user-menu">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="/settings/">Perfil</a>
+                        <a href="/settings/">Configurações</a>
+                        <a href="#" id="logout-link">Sair</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Editar Postagem</h1>
+        
+        <div id="loading" class="loading">Carregando postagem...</div>
+        
+        <div id="form-container" class="form-container" style="display: none;">
+            <div id="ai-tools" class="ai-tools">
+                <h2>Ferramentas de IA</h2>
+                <div class="ai-form">
+                    <div class="ai-form-group">
+                        <label for="ai-topic">Tema ou Ideia</label>
+                        <input type="text" id="ai-topic" placeholder="Ex: Marketing Digital">
+                    </div>
+                    <div class="ai-form-group">
+                        <label for="ai-tone">Tom</label>
+                        <select id="ai-tone">
+                            <option value="professional">Profissional</option>
+                            <option value="casual">Casual</option>
+                            <option value="inspirational">Inspiracional</option>
+                            <option value="educational">Educativo</option>
+                        </select>
+                    </div>
+                    <div class="ai-form-group">
+                        <label for="ai-length">Comprimento</label>
+                        <select id="ai-length">
+                            <option value="short">Curto</option>
+                            <option value="medium">Médio</option>
+                            <option value="long">Longo</option>
+                        </select>
+                    </div>
+                </div>
+                <button id="generate-content" class="ai-button">Gerar Conteúdo com IA</button>
+                <p id="ai-error" class="error-message" style="display: none;"></p>
+            </div>
+            
+            <form id="edit-post-form">
+                <div class="form-group">
+                    <label for="title">Título</label>
+                    <input type="text" id="title" name="title" required>
+                    <div id="title-error" class="error-message" style="display: none;"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="content">Conteúdo</label>
+                    <textarea id="content" name="content" required></textarea>
+                    <div id="content-error" class="error-message" style="display: none;"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status" required>
+                        <option value="rascunho">Rascunho</option>
+                        <option value="pronto">Pronto</option>
+                        <option value="publicado">Publicado</option>
+                    </select>
+                    <div id="status-error" class="error-message" style="display: none;"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="platform">Plataforma</label>
+                    <select id="platform" name="platform" required>
+                        <option value="linkedin">LinkedIn</option>
+                    </select>
+                    <div id="platform-error" class="error-message" style="display: none;"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">Categoria</label>
+                    <select id="category" name="category_id">
+                        <option value="">Selecione uma categoria</option>
+                        <!-- Categorias serão carregadas dinamicamente -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tags</label>
+                    <div class="tags-container" id="tags-container">
+                        <!-- Tags selecionadas serão exibidas aqui -->
+                    </div>
+                    <div class="tag-input-container">
+                        <select id="tag-select" class="tag-input">
+                            <option value="">Selecione uma tag</option>
+                            <!-- Tags serão carregadas dinamicamente -->
+                        </select>
+                        <button type="button" id="add-tag" class="button secondary-button add-tag-button">Adicionar</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="scheduled_at">Data de Agendamento</label>
+                    <input type="datetime-local" id="scheduled_at" name="scheduled_at">
+                    <div id="scheduled_at-error" class="error-message" style="display: none;"></div>
+                </div>
+                
+                <div class="form-group">
+                    <button type="button" id="suggest-timing" class="button secondary-button">Sugerir Horário Ideal</button>
+                    <div id="timing-suggestions" style="display: none; margin-top: 1rem;">
+                        <!-- Sugestões de horário serão exibidas aqui -->
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <a href="/posts/" class="button secondary-button">Cancelar</a>
+                    <button type="submit" class="button primary-button">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/build/js/api.js"></script>
+    <script src="/build/js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar autenticação
+            if (!api.isAuthenticated()) {
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            // Elementos DOM
+            const loadingElement = document.getElementById('loading');
+            const formContainer = document.getElementById('form-container');
+            const editPostForm = document.getElementById('edit-post-form');
+            const titleInput = document.getElementById('title');
+            const contentInput = document.getElementById('content');
+            const statusSelect = document.getElementById('status');
+            const platformSelect = document.getElementById('platform');
+            const categorySelect = document.getElementById('category');
+            const tagSelect = document.getElementById('tag-select');
+            const tagsContainer = document.getElementById('tags-container');
+            const addTagButton = document.getElementById('add-tag');
+            const scheduledAtInput = document.getElementById('scheduled_at');
+            const suggestTimingButton = document.getElementById('suggest-timing');
+            const timingSuggestions = document.getElementById('timing-suggestions');
+            const generateContentButton = document.getElementById('generate-content');
+            const aiTopic = document.getElementById('ai-topic');
+            const aiTone = document.getElementById('ai-tone');
+            const aiLength = document.getElementById('ai-length');
+            const aiError = document.getElementById('ai-error');
+            const aiTools = document.getElementById('ai-tools');
+            
+            // Variáveis globais
+            let selectedTags = [];
+            let allTags = [];
+            let allCategories = [];
+            let currentPost = null;
+            
+            // Obter ID da postagem da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('id');
+            
+            if (!postId) {
+                loadingElement.textContent = 'ID da postagem não fornecido.';
+                return;
+            }
+            
+            // Carregar dados iniciais
+            loadInitialData();
+            
+            // Event listeners
+            editPostForm.addEventListener('submit', handleSubmit);
+            addTagButton.addEventListener('click', addTag);
+            suggestTimingButton.addEventListener('click', suggestTiming);
+            generateContentButton.addEventListener('click', generateContent);
+            
+            // Funções
+            async function loadInitialData() {
+                try {
+                    // Mostrar loading
+                    loadingElement.style.display = 'block';
+                    formContainer.style.display = 'none';
+                    
+                    // Carregar postagem, categorias e tags em paralelo
+                    const [postResponse, categoriesResponse, tagsResponse] = await Promise.all([
+                        api.posts.get(postId),
+                        api.categories.getAll(),
+                        api.tags.getAll()
+                    ]);
+                    
+                    // Armazenar dados
+                    currentPost = postResponse.post;
+                    allCategories = categoriesResponse.categories || [];
+                    allTags = tagsResponse.tags || [];
+                    
+                    // Verificar se o usuário tem plano Pro para ferramentas de IA
+                    const user = api.getCurrentUser();
+                    if (user && user.subscription_plan !== 'pro') {
+                        aiTools.style.display = 'none';
+                    }
+                    
+                    // Preencher formulário com dados da postagem
+                    populateForm();
+                    
+                    // Preencher selects de categoria e tag
+                    populateCategorySelect();
+                    populateTagSelect();
+                    
+                    // Esconder loading e mostrar formulário
+                    loadingElement.style.display = 'none';
+                    formContainer.style.display = 'block';
+                } catch (error) {
+                    console.error('Erro ao carregar dados iniciais:', error);
+                    loadingElement.textContent = 'Erro ao carregar dados. Por favor, tente novamente.';
+                }
+            }
+            
+            function populateForm() {
+                // Preencher campos do formulário
+                titleInput.value = currentPost.title;
+                contentInput.value = currentPost.content;
+                statusSelect.value = currentPost.status;
+                platformSelect.value = currentPost.platform;
+                
+                // Categoria
+                if (currentPost.category_id) {
+                    categorySelect.value = currentPost.category_id;
+                }
+                
+                // Tags
+                if (currentPost.tags && currentPost.tags.length > 0) {
+                    selectedTags = currentPost.tags.map(tag => ({
+                        id: tag.id,
+                        name: tag.name
+                    }));
+                    renderTags();
+                }
+                
+                // Data de agendamento
+                if (currentPost.scheduled_at) {
+                    // Formatar data para o formato aceito pelo input datetime-local
+                    const scheduledDate = new Date(currentPost.scheduled_at);
+                    const year = scheduledDate.getFullYear();
+                    const month = String(scheduledDate.getMonth() + 1).padStart(2, '0');
+                    const day = String(scheduledDate.getDate()).padStart(2, '0');
+                    const hours = String(scheduledDate.getHours()).padStart(2, '0');
+                    const minutes = String(scheduledDate.getMinutes()).padStart(2, '0');
+                    
+                    scheduledAtInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+                }
+            }
+            
+            function populateCategorySelect() {
+                let options = '<option value="">Selecione uma categoria</option>';
+                
+                allCategories.forEach(category => {
+                    const selected = currentPost.category_id === category.id ? 'selected' : '';
+                    options += `<option value="${category.id}" ${selected}>${category.name}</option>`;
+                });
+                
+                categorySelect.innerHTML = options;
+            }
+            
+            function populateTagSelect() {
+                let options = '<option value="">Selecione uma tag</option>';
+                
+                // Filtrar tags que já foram selecionadas
+                const availableTags = allTags.filter(tag => 
+                    !selectedTags.some(selectedTag => selectedTag.id === tag.id)
+                );
+                
+                availableTags.forEach(tag => {
+                    options += `<option value="${tag.id}">${tag.name}</option>`;
+                });
+                
+                tagSelect.innerHTML = options;
+            }
+            
+            function renderTags() {
+                let tagsHtml = '';
+                
+                selectedTags.forEach(tag => {
+                    tagsHtml += `
+                        <div class="tag" data-id="${tag.id}">
+                            ${tag.name}
+                            <span class="tag-remove" data-id="${tag.id}">&times;</span>
+                        </div>
+                    `;
+                });
+                
+                tagsContainer.innerHTML = tagsHtml;
+                
+                // Adicionar event listeners para remover tags
+                document.querySelectorAll('.tag-remove').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const tagId = parseInt(this.dataset.id);
+                        removeTag(tagId);
+                    });
+                });
+                
+                // Atualizar select de tags
+                populateTagSelect();
+            }
+            
+            function addTag() {
+                const tagId = parseInt(tagSelect.value);
+                
+                if (!tagId) return;
+                
+                const tag = allTags.find(t => t.id === tagId);
+                
+                if (tag && !selectedTags.some(t => t.id === tagId)) {
+                    selectedTags.push({
+                        id: tag.id,
+                        name: tag.name
+                    });
+                    
+                    renderTags();
+                }
+            }
+            
+            function removeTag(tagId) {
+                selectedTags = selectedTags.filter(tag => tag.id !== tagId);
+                renderTags();
+            }
+            
+            async function suggestTiming() {
+                try {
+                    const response = await api.posts.suggestTiming('linkedin', categorySelect.value || null);
+                    
+                    if (response.suggested_times && response.suggested_times.length > 0) {
+                        let suggestionsHtml = '<h3>Horários Sugeridos</h3><ul>';
+                        
+                        response.suggested_times.forEach(suggestion => {
+                            suggestionsHtml += `
+                                <li>
+                                    <button type="button" class="timing-suggestion" data-datetime="${suggestion.datetime}">
+                                        ${suggestion.formatted}
+                                    </button>
+                                    <span>${suggestion.reason}</span>
+                                </li>
+                            `;
+                        });
+                        
+                        suggestionsHtml += '</ul>';
+                        
+                        timingSuggestions.innerHTML = suggestionsHtml;
+                        timingSuggestions.style.display = 'block';
+                        
+                        // Adicionar event listeners para selecionar horário
+                        document.querySelectorAll('.timing-suggestion').forEach(button => {
+                            button.addEventListener('click', function() {
+                                const datetime = this.dataset.datetime;
+                                const date = new Date(datetime);
+                                
+                                // Formatar para o input datetime-local
+                                const year = date.getFullYear();
+                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                const day = String(date.getDate()).padStart(2, '0');
+                                const hours = String(date.getHours()).padStart(2, '0');
+                                const minutes = String(date.getMinutes()).padStart(2, '0');
+                                
+                                scheduledAtInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+                            });
+                        });
+                    } else {
+                        timingSuggestions.innerHTML = '<p>Nenhuma sugestão de horário disponível.</p>';
+                        timingSuggestions.style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Erro ao obter sugestões de horário:', error);
+                    timingSuggestions.innerHTML = '<p class="error-message">Erro ao obter sugestões de horário. Por favor, tente novamente.</p>';
+                    timingSuggestions.style.display = 'block';
+                }
+            }
+            
+            async function generateContent() {
+                try {
+                    const topic = aiTopic.value.trim();
+                    
+                    if (!topic) {
+                        aiError.textContent = 'Por favor, informe um tema ou ideia.';
+                        aiError.style.display = 'block';
+                        return;
+                    }
+                    
+                    aiError.style.display = 'none';
+                    generateContentButton.textContent = 'Gerando...';
+                    generateContentButton.disabled = true;
+                    
+                    const response = await api.posts.generateWithAI(
+                        topic,
+                        aiTone.value,
+                        aiLength.value
+                    );
+                    
+                    if (response.title && response.content) {
+                        titleInput.value = response.title;
+                        contentInput.value = response.content;
+                    }
+                    
+                    generateContentButton.textContent = 'Gerar Conteúdo com IA';
+                    generateContentButton.disabled = false;
+                } catch (error) {
+                    console.error('Erro ao gerar conteúdo com IA:', error);
+                    aiError.textContent = 'Erro ao gerar conteúdo. Esta funcionalidade requer plano Pro.';
+                    aiError.style.display = 'block';
+                    generateContentButton.textContent = 'Gerar Conteúdo com IA';
+                    generateContentButton.disabled = false;
+                }
+            }
+            
+            async function handleSubmit(e) {
+                e.preventDefault();
+                
+                // Limpar mensagens de erro
+                document.querySelectorAll('.error-message').forEach(el => {
+                    el.style.display = 'none';
+                });
+                
+                // Validar campos obrigatórios
+                let hasError = false;
+                
+                if (!titleInput.value.trim()) {
+                    document.getElementById('title-error').textContent = 'O título é obrigatório.';
+                    document.getElementById('title-error').style.display = 'block';
+                    hasError = true;
+                }
+                
+                if (!contentInput.value.trim()) {
+                    document.getElementById('content-error').textContent = 'O conteúdo é obrigatório.';
+                    document.getElementById('content-error').style.display = 'block';
+                    hasError = true;
+                }
+                
+                if (hasError) return;
+                
+                try {
+                    // Preparar dados para envio
+                    const postData = {
+                        title: titleInput.value.trim(),
+                        content: contentInput.value.trim(),
+                        status: statusSelect.value,
+                        platform: platformSelect.value,
+                        category_id: categorySelect.value || null,
+                        scheduled_at: scheduledAtInput.value || null,
+                        tags: selectedTags.map(tag => tag.id)
+                    };
+                    
+                    // Enviar dados para a API
+                    await api.posts.update(postId, postData);
+                    
+                    // Redirecionar para a página de listagem
+                    window.location.href = '/posts/';
+                } catch (error) {
+                    console.error('Erro ao atualizar postagem:', error);
+                    alert('Erro ao atualizar postagem. Por favor, tente novamente.');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

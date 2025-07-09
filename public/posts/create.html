@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Postagem - PostPilot</title>
+    <style>
+        body {
+            font-family: 'Figtree', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8fafc;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        header {
+            background-color: #4f46e5;
+            color: white;
+            padding: 1rem 0;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+        .primary-button {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .secondary-button {
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .ai-section {
+            background-color: #e0e7ff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .ai-section h2 {
+            color: #4f46e5;
+            margin-top: 0;
+        }
+        .ai-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .ai-option {
+            padding: 0.5rem;
+            border: 1px solid #c7d2fe;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .ai-option:hover {
+            background-color: #c7d2fe;
+        }
+        .ai-option.selected {
+            background-color: #818cf8;
+            color: white;
+            border-color: #818cf8;
+        }
+        .tag-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .tag {
+            background-color: #e0e7ff;
+            color: #4f46e5;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .tag-remove {
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .datetime-picker {
+            display: flex;
+            gap: 1rem;
+        }
+        .datetime-picker input {
+            flex: 1;
+        }
+        .user-menu {
+            position: relative;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #818cf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">PostPilot</a>
+                <nav>
+                    <ul>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="/posts">Postagens</a></li>
+                        <li><a href="/posts/calendar">Calendário</a></li>
+                        <li><a href="/reports">Relatórios</a></li>
+                        <li><a href="/settings">Configurações</a></li>
+                    </ul>
+                </nav>
+                <div class="user-menu">
+                    <div class="user-avatar">U</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Criar Nova Postagem</h1>
+        
+        <div class="ai-section">
+            <h2>Gerar Conteúdo com IA</h2>
+            <p>Utilize nossa ferramenta de IA para gerar conteúdo profissional para sua postagem.</p>
+            
+            <div class="form-group">
+                <label for="ai-topic">Tópico ou Ideia</label>
+                <input type="text" id="ai-topic" placeholder="Ex: Tendências de marketing digital para 2025">
+            </div>
+            
+            <div class="form-group">
+                <label>Tom do Conteúdo</label>
+                <div class="ai-options">
+                    <div class="ai-option selected">Profissional</div>
+                    <div class="ai-option">Casual</div>
+                    <div class="ai-option">Inspirador</div>
+                    <div class="ai-option">Educativo</div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Comprimento</label>
+                <div class="ai-options">
+                    <div class="ai-option">Curto</div>
+                    <div class="ai-option selected">Médio</div>
+                    <div class="ai-option">Longo</div>
+                </div>
+            </div>
+            
+            <button class="button primary-button">Gerar Conteúdo</button>
+        </div>
+        
+        <div class="form-container">
+            <form>
+                <div class="form-group">
+                    <label for="title">Título</label>
+                    <input type="text" id="title" placeholder="Título da postagem">
+                </div>
+                
+                <div class="form-group">
+                    <label for="content">Conteúdo</label>
+                    <textarea id="content" placeholder="Escreva o conteúdo da sua postagem aqui..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">Categoria</label>
+                    <select id="category">
+                        <option value="">Selecione uma categoria</option>
+                        <option value="1">Marketing Digital</option>
+                        <option value="2">Tecnologia</option>
+                        <option value="3">Liderança</option>
+                        <option value="4">Produtividade</option>
+                        <option value="5">Carreira</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tags">Tags</label>
+                    <input type="text" id="tags" placeholder="Digite uma tag e pressione Enter">
+                    <div class="tag-selector">
+                        <div class="tag">marketing <span class="tag-remove">×</span></div>
+                        <div class="tag">tendências <span class="tag-remove">×</span></div>
+                        <div class="tag">2025 <span class="tag-remove">×</span></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="platform">Plataforma</label>
+                    <select id="platform">
+                        <option value="linkedin">LinkedIn</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status">
+                        <option value="rascunho">Rascunho</option>
+                        <option value="pronto">Pronto para Publicação</option>
+                        <option value="publicado">Publicar Agora</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="scheduled">Agendar Publicação</label>
+                    <div class="datetime-picker">
+                        <input type="date" id="scheduled-date">
+                        <input type="time" id="scheduled-time">
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button type="submit" class="button primary-button">Salvar Postagem</button>
+                    <a href="/posts" class="button secondary-button">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

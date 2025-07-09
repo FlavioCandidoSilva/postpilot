@@ -1,0 +1,52 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: postpilot_app
+    ports:
+      - "8000:8000"
+      - "9003:9003"
+    volumes:
+      - ./:/var/www
+      - ./vendor:/var/www/vendor:delegated
+    depends_on:
+      - mysql
+      - rabbitmq
+    restart: unless-stopped
+    networks:
+      - postpilot_net
+
+
+  mysql:
+    image: mysql:8
+    container_name: postpilot_mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: postpilot_db
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - postpilot_net
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: postpilot_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    restart: always
+    networks:
+      - postpilot_net
+
+volumes:
+  mysql_data:
+
+networks:
+  postpilot_net:

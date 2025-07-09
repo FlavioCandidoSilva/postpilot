@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Template de Prompt - PostPilot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../build/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h3>PostPilot</h3>
+            </div>
+
+            <ul class="list-unstyled components">
+                <li>
+                    <a href="../dashboard/index.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="../posts/index.html"><i class="fas fa-file-alt"></i> Postagens</a>
+                </li>
+                <li>
+                    <a href="../posts/calendar.html"><i class="fas fa-calendar"></i> Calendário</a>
+                </li>
+                <li class="active">
+                    <a href="index.html"><i class="fas fa-lightbulb"></i> Templates de IA</a>
+                </li>
+                <li>
+                    <a href="../categories/index.html"><i class="fas fa-folder"></i> Categorias</a>
+                </li>
+                <li>
+                    <a href="../tags/index.html"><i class="fas fa-tags"></i> Tags</a>
+                </li>
+                <li>
+                    <a href="../reports/index.html"><i class="fas fa-chart-bar"></i> Relatórios</a>
+                </li>
+                <li>
+                    <a href="../settings/index.html"><i class="fas fa-cog"></i> Configurações</a>
+                </li>
+                <li>
+                    <a href="../subscription/index.html"><i class="fas fa-star"></i> Assinatura</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Page Content -->
+        <div id="content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fas fa-align-left"></i>
+                        <span>Menu</span>
+                    </button>
+                    <div class="d-flex">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user"></i> <span id="username">Usuário</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="../settings/index.html">Perfil</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" id="logout">Sair</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid">
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h2>Criar Novo Template de Prompt</h2>
+                        <p>Crie um template personalizado para gerar conteúdo com IA.</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="index.html" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Formulário de Criação -->
+                <div class="card">
+                    <div class="card-body">
+                        <form id="createTemplateForm">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="templateName" class="form-label">Nome do Template *</label>
+                                        <input type="text" class="form-control" id="templateName" name="name" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="templateCategory" class="form-label">Categoria *</label>
+                                        <select class="form-control" id="templateCategory" name="category" required>
+                                            <option value="">Selecione uma categoria</option>
+                                            <option value="ideias">Ideias de Conteúdo</option>
+                                            <option value="publicacoes">Publicações</option>
+                                            <option value="analise">Análise de Conteúdo</option>
+                                            <option value="personalizado">Personalizado</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="templateDescription" class="form-label">Descrição</label>
+                                <textarea class="form-control" id="templateDescription" name="description" rows="2"></textarea>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="templateContent" class="form-label">Conteúdo do Template (XML) *</label>
+                                <div class="alert alert-info">
+                                    <p><strong>Dicas para criar um bom template:</strong></p>
+                                    <ul>
+                                        <li>Use tags XML para estruturar seu prompt</li>
+                                        <li>Tags comuns: &lt;task&gt;, &lt;instrucoes&gt;, &lt;restricoes&gt;, &lt;exemplos&gt;, &lt;objetivo&gt;</li>
+                                        <li>Crie tags personalizadas para variáveis que deseja substituir ao usar o template</li>
+                                    </ul>
+                                </div>
+                                <textarea class="form-control" id="templateContent" name="content" rows="15" required></textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Variáveis Detectadas</label>
+                                        <div id="detectedVariables" class="p-2 border rounded bg-light">
+                                            <p class="text-muted">As variáveis serão detectadas automaticamente ao digitar o conteúdo XML.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Validação XML</label>
+                                        <div id="xmlValidation" class="p-2 border rounded bg-light">
+                                            <p class="text-muted">O XML será validado automaticamente ao digitar.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html'">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Salvar Template</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Exemplo de Template -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5>Exemplo de Template</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre id="exampleTemplate" class="border rounded p-3 bg-light"><code>&lt;task&gt;
+ Quero que você sugira 5 ideias originais de temas para publicações no LinkedIn, focadas na área 
+de gestão de produto.
+&lt;/task&gt;
+&lt;restricoes&gt;
+ Não quero temas genéricos ou clichês como "dicas de PO" ou "práticas ágeis".
+ O foco deve ser criar conexões inesperadas e provocativas entre:
+ &lt;elemento_externo&gt;
+ um acontecimento, fenômeno ou referência externa (histórica, cultural, política, científica, 
+econômica, tecnológica, etc.)
+ &lt;/elemento_externo&gt;
+ e
+ &lt;conceito_produto&gt;
+ conceitos, dilemas ou desafios reais da gestão de produto (ex.: discovery, priorização, validação, 
+MVP, trade-offs, decisões de negócio, etc.)
+ &lt;/conceito_produto&gt;
+&lt;/restricoes&gt;
+&lt;exemplos&gt;
+ Os exemplos a seguir são apenas ilustrativos para demonstrar o tipo de associação desejada, 
+mas NÃO devem ser usados:
+ &lt;exemplo&gt;Um evento histórico (ex: corrida espacial)&lt;/exemplo&gt;
+ &lt;exemplo&gt;Uma notícia futura ou especulativa (ex: carros voadores em 2026)&lt;/exemplo&gt;
+ &lt;exemplo&gt;Um movimento social, cultural ou econômico atual (ex: ascensão do TikTok)&lt;/exemplo&gt;
+ &lt;exemplo&gt;Algo curioso, memorável ou inusitado que sirva como gancho reflexivo&lt;/exemplo&gt;
+&lt;/exemplos&gt;
+&lt;objetivo&gt;
+Gerar ideias que funcionem como pontos de partida para reflexões profundas e relevantes sobre 
+práticas e desafios reais da gestão de produto, com potencial para se destacar e engajar no feed 
+do LinkedIn.
+&lt;/objetivo&gt;
+&lt;instrucoes&gt;
+ Produza ideias novas, criativas e com alto potencial de impacto.
+ Evite temas já muito explorados ou superficiais.
+ Pense em analogias e conexões pouco óbvias que provoquem interesse e curiosidade.  
+&lt;/instrucoes&gt;</code></pre>
+                        <button type="button" class="btn btn-outline-primary" id="useExampleBtn">
+                            <i class="fas fa-copy"></i> Usar Este Exemplo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
+    <script src="../build/js/auth.js"></script>
+    <script src="../build/js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar autenticação
+            if (!api.isAuthenticated()) {
+                window.location.href = '../login.html';
+                return;
+            }
+
+            // Exibir nome do usuário
+            const user = api.getCurrentUser();
+            if (user) {
+                document.getElementById('username').textContent = user.name;
+            }
+
+            // Logout
+            document.getElementById('logout').addEventListener('click', async function(e) {
+                e.preventDefault();
+                try {
+                    await api.auth.logout();
+                    window.location.href = '../login.html';
+                } catch (error) {
+                    console.error('Erro ao fazer logout:', error);
+                    alert('Erro ao fazer logout. Por favor, tente novamente.');
+                }
+            });
+
+            // Toggle sidebar
+            document.getElementById('sidebarCollapse').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+
+            // Inicializar CodeMirror para o editor XML
+            const editor = CodeMirror.fromTextArea(document.getElementById('templateContent'), {
+                mode: 'xml',
+                theme: 'dracula',
+                lineNumbers: true,
+                autoCloseTags: true,
+                matchBrackets: true,
+                indentUnit: 2,
+                tabSize: 2,
+                lineWrapping: true
+            });
+
+            // Detectar variáveis e validar XML ao digitar
+            editor.on('change', function() {
+                const content = editor.getValue();
+                detectVariables(content);
+                validateXml(content);
+            });
+
+            // Usar exemplo
+            document.getElementById('useExampleBtn').addEventListener('click', function() {
+                const exampleContent = document.getElementById('exampleTemplate').textContent;
+                editor.setValue(exampleContent);
+                detectVariables(exampleContent);
+                validateXml(exampleContent);
+            });
+
+            // Enviar formulário
+            document.getElementById('createTemplateForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Atualizar o valor do textarea antes de enviar
+                editor.save();
+                
+                const formData = {
+                    name: document.getElementById('templateName').value,
+                    description: document.getElementById('templateDescription').value,
+                    content: document.getElementById('templateContent').value,
+                    category: document.getElementById('templateCategory').value
+                };
+                
+                try {
+                    await api.prompts.create(formData);
+                    window.location.href = 'index.html';
+                } catch (error) {
+                    console.error('Erro ao criar template:', error);
+                    showAlert('Erro ao criar template. Por favor, verifique os dados e tente novamente.', 'danger');
+                }
+            });
+        });
+
+        // Função para detectar variáveis no XML
+        function detectVariables(xmlContent) {
+            const detectedVariablesDiv = document.getElementById('detectedVariables');
+            
+            try {
+                // Criar um parser XML
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
+                
+                // Verificar se há erros de parsing
+                if (xmlDoc.getElementsByTagName('parsererror').length > 0) {
+                    detectedVariablesDiv.innerHTML = '<p class="text-danger">Não foi possível detectar variáveis. Corrija o XML primeiro.</p>';
+                    return;
+                }
+                
+                // Conjunto para armazenar variáveis únicas
+                const variables = new Set();
+                
+                // Tags padrão que não são consideradas variáveis
+                const standardTags = ['task', 'instrucoes', 'restricoes', 'exemplos', 'objetivo', 'exemplo'];
+                
+                // Função recursiva para percorrer os nós XML
+                function traverseNodes(node) {
+                    if (node.nodeType === 1) { // Elemento
+                        const tagName = node.nodeName.toLowerCase();
+                        if (!standardTags.includes(tagName)) {
+                            variables.add(tagName);
+                        }
+                    }
+                    
+                    // Percorrer filhos
+                    for (let i = 0; i < node.childNodes.length; i++) {
+                        traverseNodes(node.childNodes[i]);
+                    }
+                }
+                
+                // Iniciar travessia a partir do nó raiz
+                traverseNodes(xmlDoc.documentElement);
+                
+                // Exibir variáveis detectadas
+                if (variables.size > 0) {
+                    let html = '<div class="list-group">';
+                    variables.forEach(variable => {
+                        html += `<div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>${variable}</span>
+                            <span class="badge bg-primary rounded-pill">Variável</span>
+                        </div>`;
+                    });
+                    html += '</div>';
+                    detectedVariablesDiv.innerHTML = html;
+                } else {
+                    detectedVariablesDiv.innerHTML = '<p class="text-warning">Nenhuma variável detectada. Considere adicionar tags personalizadas.</p>';
+                }
+            } catch (error) {
+                console.error('Erro ao detectar variáveis:', error);
+                detectedVariablesDiv.innerHTML = '<p class="text-danger">Erro ao processar o XML.</p>';
+            }
+        }
+
+        // Função para validar XML
+        function validateXml(xmlContent) {
+            const xmlValidationDiv = document.getElementById('xmlValidation');
+            
+            try {
+                // Criar um parser XML
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
+                
+                // Verificar se há erros de parsing
+                const parseError = xmlDoc.getElementsByTagName('parsererror');
+                if (parseError.length > 0) {
+                    const errorText = parseError[0].textContent;
+                    xmlValidationDiv.innerHTML = `<p class="text-danger"><i class="fas fa-times-circle"></i> XML inválido</p>
+                                                <small class="text-danger">${errorText}</small>`;
+                } else {
+                    xmlValidationDiv.innerHTML = '<p class="text-success"><i class="fas fa-check-circle"></i> XML válido</p>';
+                }
+            } catch (error) {
+                console.error('Erro ao validar XML:', error);
+                xmlValidationDiv.innerHTML = '<p class="text-danger"><i class="fas fa-times-circle"></i> Erro ao validar XML</p>';
+            }
+        }
+
+        // Função para mostrar alertas
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.setAttribute('role', 'alert');
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            const container = document.querySelector('.container-fluid');
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            // Auto-fechar após 5 segundos
+            setTimeout(() => {
+                alertDiv.classList.remove('show');
+                setTimeout(() => alertDiv.remove(), 150);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

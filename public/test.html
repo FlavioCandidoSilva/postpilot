@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Integração - PostPilot</title>
+    <style>
+        body {
+            font-family: 'Figtree', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8fafc;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #4f46e5;
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem;
+            color: #4f46e5;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        .button {
+            display: inline-block;
+            background-color: #4f46e5;
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .button:hover {
+            background-color: #4338ca;
+        }
+        .test-results {
+            margin-top: 1.5rem;
+        }
+        .test-item {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .test-item:last-child {
+            border-bottom: none;
+        }
+        .test-name {
+            font-weight: 600;
+        }
+        .test-status {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            margin-left: 0.5rem;
+        }
+        .status-passed {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .status-failed {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        .status-pending {
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+        .console-output {
+            background-color: #1f2937;
+            color: #f9fafb;
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            color: #4f46e5;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Teste de Integração Frontend-Backend</h1>
+        
+        <div class="card">
+            <h2>Configuração de Teste</h2>
+            <p>Esta página permite testar a integração entre o frontend estático e o backend Laravel do projeto PostPilot.</p>
+            <p>Os testes verificam:</p>
+            <ul>
+                <li>Conexão com a API</li>
+                <li>Fluxo de autenticação (login/logout)</li>
+                <li>Operações CRUD de postagens</li>
+            </ul>
+            
+            <button id="run-tests" class="button">Executar Testes</button>
+        </div>
+        
+        <div class="card test-results" id="test-results" style="display: none;">
+            <h2>Resultados dos Testes</h2>
+            
+            <div class="test-item">
+                <span class="test-name">Conexão com a API:</span>
+                <span class="test-status status-pending" id="api-connection-status">Pendente</span>
+            </div>
+            
+            <div class="test-item">
+                <span class="test-name">Fluxo de Autenticação:</span>
+                <span class="test-status status-pending" id="auth-flow-status">Pendente</span>
+            </div>
+            
+            <div class="test-item">
+                <span class="test-name">API de Postagens:</span>
+                <span class="test-status status-pending" id="posts-api-status">Pendente</span>
+            </div>
+            
+            <div class="test-item">
+                <span class="test-name">Resultado Geral:</span>
+                <span class="test-status status-pending" id="overall-status">Pendente</span>
+            </div>
+            
+            <div class="console-output" id="console-output">Aguardando execução dos testes...</div>
+        </div>
+        
+        <a href="/" class="back-link">← Voltar para a página inicial</a>
+    </div>
+
+    <script src="/build/js/api.js"></script>
+    <script src="/build/js/tests.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const runTestsButton = document.getElementById('run-tests');
+            const testResultsSection = document.getElementById('test-results');
+            const apiConnectionStatus = document.getElementById('api-connection-status');
+            const authFlowStatus = document.getElementById('auth-flow-status');
+            const postsApiStatus = document.getElementById('posts-api-status');
+            const overallStatus = document.getElementById('overall-status');
+            const consoleOutput = document.getElementById('console-output');
+            
+            // Sobrescrever console.log para capturar saída
+            const originalConsoleLog = console.log;
+            const originalConsoleError = console.error;
+            let consoleMessages = [];
+            
+            console.log = function() {
+                consoleMessages.push(['log', Array.from(arguments).join(' ')]);
+                originalConsoleLog.apply(console, arguments);
+                updateConsoleOutput();
+            };
+            
+            console.error = function() {
+                consoleMessages.push(['error', Array.from(arguments).join(' ')]);
+                originalConsoleError.apply(console, arguments);
+                updateConsoleOutput();
+            };
+            
+            function updateConsoleOutput() {
+                let output = '';
+                consoleMessages.forEach(msg => {
+                    const type = msg[0];
+                    const text = msg[1];
+                    const color = type === 'error' ? '#f87171' : '#ffffff';
+                    output += `<span style="color: ${color}">${text}</span>\n`;
+                });
+                consoleOutput.innerHTML = output;
+                consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            }
+            
+            runTestsButton.addEventListener('click', async function() {
+                // Resetar console e status
+                consoleMessages = [];
+                updateConsoleOutput();
+                
+                apiConnectionStatus.textContent = 'Executando...';
+                apiConnectionStatus.className = 'test-status status-pending';
+                
+                authFlowStatus.textContent = 'Executando...';
+                authFlowStatus.className = 'test-status status-pending';
+                
+                postsApiStatus.textContent = 'Executando...';
+                postsApiStatus.className = 'test-status status-pending';
+                
+                overallStatus.textContent = 'Executando...';
+                overallStatus.className = 'test-status status-pending';
+                
+                testResultsSection.style.display = 'block';
+                
+                try {
+                    // Executar testes
+                    const results = await tests.runAllTests();
+                    
+                    // Atualizar status
+                    updateTestStatus(apiConnectionStatus, results.apiConnection);
+                    updateTestStatus(authFlowStatus, results.authFlow);
+                    updateTestStatus(postsApiStatus, results.postsApi);
+                    updateTestStatus(overallStatus, results.allPassed);
+                } catch (error) {
+                    console.error('Erro ao executar testes:', error);
+                    
+                    // Atualizar status para falha
+                    apiConnectionStatus.textContent = 'Falhou';
+                    apiConnectionStatus.className = 'test-status status-failed';
+                    
+                    authFlowStatus.textContent = 'Falhou';
+                    authFlowStatus.className = 'test-status status-failed';
+                    
+                    postsApiStatus.textContent = 'Falhou';
+                    postsApiStatus.className = 'test-status status-failed';
+                    
+                    overallStatus.textContent = 'Falhou';
+                    overallStatus.className = 'test-status status-failed';
+                }
+            });
+            
+            function updateTestStatus(element, passed) {
+                if (passed) {
+                    element.textContent = 'Passou';
+                    element.className = 'test-status status-passed';
+                } else {
+                    element.textContent = 'Falhou';
+                    element.className = 'test-status status-failed';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

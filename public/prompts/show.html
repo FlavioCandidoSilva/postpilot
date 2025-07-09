@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizar Template de Prompt - PostPilot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../build/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h3>PostPilot</h3>
+            </div>
+
+            <ul class="list-unstyled components">
+                <li>
+                    <a href="../dashboard/index.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="../posts/index.html"><i class="fas fa-file-alt"></i> Postagens</a>
+                </li>
+                <li>
+                    <a href="../posts/calendar.html"><i class="fas fa-calendar"></i> Calendário</a>
+                </li>
+                <li class="active">
+                    <a href="index.html"><i class="fas fa-lightbulb"></i> Templates de IA</a>
+                </li>
+                <li>
+                    <a href="../categories/index.html"><i class="fas fa-folder"></i> Categorias</a>
+                </li>
+                <li>
+                    <a href="../tags/index.html"><i class="fas fa-tags"></i> Tags</a>
+                </li>
+                <li>
+                    <a href="../reports/index.html"><i class="fas fa-chart-bar"></i> Relatórios</a>
+                </li>
+                <li>
+                    <a href="../settings/index.html"><i class="fas fa-cog"></i> Configurações</a>
+                </li>
+                <li>
+                    <a href="../subscription/index.html"><i class="fas fa-star"></i> Assinatura</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Page Content -->
+        <div id="content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fas fa-align-left"></i>
+                        <span>Menu</span>
+                    </button>
+                    <div class="d-flex">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user"></i> <span id="username">Usuário</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="../settings/index.html">Perfil</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" id="logout">Sair</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid">
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h2>Visualizar Template de Prompt</h2>
+                        <p>Detalhes do template e estrutura do prompt.</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="index.html" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Detalhes do Template -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 id="templateName">Carregando template...</h5>
+                        <div>
+                            <span class="badge bg-secondary" id="templateCategory">Categoria</span>
+                            <span class="badge bg-primary" id="templateType">Tipo</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p id="templateDescription" class="mb-4">Carregando descrição...</p>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h6>Variáveis Disponíveis</h6>
+                                <div id="variablesList" class="list-group">
+                                    <div class="list-group-item text-muted">Carregando variáveis...</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Informações Adicionais</h6>
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Criado em
+                                        <span id="templateCreatedAt">-</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Última atualização
+                                        <span id="templateUpdatedAt">-</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Criado por
+                                        <span id="templateCreatedBy">-</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <h6>Estrutura do Prompt (XML)</h6>
+                        <div id="templateContent" class="border rounded p-3 bg-light">
+                            <pre><code>Carregando conteúdo...</code></pre>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <a href="index.html" class="btn btn-secondary">Voltar</a>
+                            </div>
+                            <div>
+                                <a href="#" id="editTemplateBtn" class="btn btn-outline-primary me-2 d-none">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                <a href="#" id="useTemplateBtn" class="btn btn-primary">
+                                    <i class="fas fa-play"></i> Usar Template
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
+    <script src="../build/js/auth.js"></script>
+    <script src="../build/js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar autenticação
+            if (!api.isAuthenticated()) {
+                window.location.href = '../login.html';
+                return;
+            }
+
+            // Exibir nome do usuário
+            const user = api.getCurrentUser();
+            if (user) {
+                document.getElementById('username').textContent = user.name;
+            }
+
+            // Logout
+            document.getElementById('logout').addEventListener('click', async function(e) {
+                e.preventDefault();
+                try {
+                    await api.auth.logout();
+                    window.location.href = '../login.html';
+                } catch (error) {
+                    console.error('Erro ao fazer logout:', error);
+                    alert('Erro ao fazer logout. Por favor, tente novamente.');
+                }
+            });
+
+            // Toggle sidebar
+            document.getElementById('sidebarCollapse').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+
+            // Obter ID do template da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const templateId = urlParams.get('id');
+            
+            if (!templateId) {
+                showAlert('ID do template não fornecido. Redirecionando para a lista de templates.', 'danger');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+                return;
+            }
+            
+            // Carregar detalhes do template
+            loadTemplate(templateId);
+            
+            // Configurar botão de usar template
+            document.getElementById('useTemplateBtn').addEventListener('click', function() {
+                window.location.href = `use.html?id=${templateId}`;
+            });
+        });
+
+        // Função para carregar detalhes do template
+        async function loadTemplate(templateId) {
+            try {
+                const response = await api.prompts.get(templateId);
+                const template = response.template;
+                const variables = response.variables;
+                
+                // Preencher detalhes do template
+                document.getElementById('templateName').textContent = template.name;
+                document.getElementById('templateDescription').textContent = template.description || 'Sem descrição';
+                document.getElementById('templateCategory').textContent = template.category;
+                document.getElementById('templateType').textContent = template.is_default ? 'Padrão' : 'Personalizado';
+                document.getElementById('templateType').className = template.is_default ? 'badge bg-primary' : 'badge bg-success';
+                
+                // Formatar datas
+                const createdAt = new Date(template.created_at);
+                const updatedAt = new Date(template.updated_at);
+                document.getElementById('templateCreatedAt').textContent = createdAt.toLocaleDateString('pt-BR');
+                document.getElementById('templateUpdatedAt').textContent = updatedAt.toLocaleDateString('pt-BR');
+                
+                // Mostrar criador (apenas para templates personalizados)
+                if (!template.is_default) {
+                    document.getElementById('templateCreatedBy').textContent = 'Você';
+                } else {
+                    document.getElementById('templateCreatedBy').textContent = 'Sistema';
+                }
+                
+                // Exibir conteúdo do template
+                document.getElementById('templateContent').innerHTML = `<pre><code>${escapeHtml(template.content)}</code></pre>`;
+                
+                // Exibir variáveis
+                const variablesList = document.getElementById('variablesList');
+                if (variables && variables.length > 0) {
+                    let html = '';
+                    variables.forEach(variable => {
+                        html += `
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                ${formatVariableName(variable)}
+                                <span class="badge bg-primary rounded-pill">Variável</span>
+                            </div>
+                        `;
+                    });
+                    variablesList.innerHTML = html;
+                } else {
+                    variablesList.innerHTML = '<div class="list-group-item text-muted">Este template não possui variáveis.</div>';
+                }
+                
+                // Mostrar botão de edição apenas para templates personalizados
+                if (!template.is_default) {
+                    const editBtn = document.getElementById('editTemplateBtn');
+                    editBtn.classList.remove('d-none');
+                    editBtn.href = `edit.html?id=${templateId}`;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar template:', error);
+                showAlert('Erro ao carregar template. Por favor, tente novamente.', 'danger');
+            }
+        }
+
+        // Função para formatar nome de variável
+        function formatVariableName(variable) {
+            // Converter snake_case ou camelCase para palavras separadas
+            return variable
+                .replace(/_/g, ' ')
+                .replace(/([A-Z])/g, ' $1')
+                .replace(/^\w/, c => c.toUpperCase());
+        }
+
+        // Função para escapar HTML
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Função para mostrar alertas
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.setAttribute('role', 'alert');
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            const container = document.querySelector('.container-fluid');
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            // Auto-fechar após 5 segundos
+            setTimeout(() => {
+                alertDiv.classList.remove('show');
+                setTimeout(() => alertDiv.remove(), 150);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

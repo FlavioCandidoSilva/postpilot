@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Tags - PostPilot</title>
+    <style>
+        body {
+            font-family: 'Figtree', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8fafc;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        header {
+            background-color: #4f46e5;
+            color: white;
+            padding: 1rem 0;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #4b5563;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        .button {
+            display: inline-block;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+        }
+        .primary-button {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .primary-button:hover {
+            background-color: #4338ca;
+        }
+        .secondary-button {
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .secondary-button:hover {
+            background-color: #e5e7eb;
+        }
+        .danger-button {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        .danger-button:hover {
+            background-color: #fecaca;
+        }
+        .tags-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .tag-item {
+            display: flex;
+            align-items: center;
+            background-color: #e0e7ff;
+            color: #4f46e5;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+        .tag-actions {
+            display: flex;
+            margin-left: 0.5rem;
+        }
+        .tag-action {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #4f46e5;
+            padding: 0 0.25rem;
+        }
+        .tag-action:hover {
+            color: #4338ca;
+        }
+        .error-message {
+            color: #ef4444;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+        .success-message {
+            color: #10b981;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+        .user-menu {
+            position: relative;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #818cf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 0;
+            min-width: 200px;
+            display: none;
+            z-index: 10;
+        }
+        .user-dropdown.active {
+            display: block;
+        }
+        .user-dropdown a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #1f2937;
+            text-decoration: none;
+        }
+        .user-dropdown a:hover {
+            background-color: #f3f4f6;
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: #6b7280;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .modal-header h2 {
+            margin: 0;
+        }
+        .modal-close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">PostPilot</a>
+                <nav>
+                    <ul>
+                        <li><a href="/dashboard/">Dashboard</a></li>
+                        <li><a href="/posts/">Postagens</a></li>
+                        <li><a href="/posts/calendar.html">Calendário</a></li>
+                        <li><a href="/reports/">Relatórios</a></li>
+                        <li><a href="/settings/">Configurações</a></li>
+                    </ul>
+                </nav>
+                <div class="user-menu">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="/settings/">Perfil</a>
+                        <a href="/settings/">Configurações</a>
+                        <a href="#" id="logout-link">Sair</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Gerenciar Tags</h1>
+        
+        <div id="loading" class="loading">Carregando tags...</div>
+        
+        <div id="content" class="grid-container" style="display: none;">
+            <div>
+                <div class="card">
+                    <h2 id="form-title">Nova Tag</h2>
+                    <form id="tag-form">
+                        <input type="hidden" id="tag-id">
+                        <div class="form-group">
+                            <label for="name">Nome da Tag</label>
+                            <input type="text" id="name" name="name" required>
+                            <div id="name-error" class="error-message" style="display: none;"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="button primary-button" id="submit-button">Adicionar Tag</button>
+                            <button type="button" class="button secondary-button" id="cancel-button" style="display: none;">Cancelar</button>
+                        </div>
+                        
+                        <div id="form-success" class="success-message" style="display: none;"></div>
+                        <div id="form-error" class="error-message" style="display: none;"></div>
+                    </form>
+                </div>
+            </div>
+            
+            <div>
+                <div class="card">
+                    <h2>Suas Tags</h2>
+                    <div class="tags-list" id="tags-list">
+                        <!-- Tags serão carregadas dinamicamente -->
+                    </div>
+                    <div id="list-empty" style="display: none; margin-top: 1rem;">
+                        <p>Você ainda não tem tags. Crie uma nova tag usando o formulário ao lado.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação de exclusão -->
+    <div class="modal" id="delete-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirmar Exclusão</h2>
+                <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+            <p>Tem certeza que deseja excluir esta tag? Esta ação não pode ser desfeita.</p>
+            <div class="modal-footer">
+                <button class="button secondary-button" id="cancel-delete">Cancelar</button>
+                <button class="button danger-button" id="confirm-delete">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/build/js/api.js"></script>
+    <script src="/build/js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar autenticação
+            if (!api.isAuthenticated()) {
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            // Elementos DOM
+            const loadingElement = document.getElementById('loading');
+            const contentElement = document.getElementById('content');
+            const tagForm = document.getElementById('tag-form');
+            const formTitle = document.getElementById('form-title');
+            const tagIdInput = document.getElementById('tag-id');
+            const nameInput = document.getElementById('name');
+            const submitButton = document.getElementById('submit-button');
+            const cancelButton = document.getElementById('cancel-button');
+            const formSuccess = document.getElementById('form-success');
+            const formError = document.getElementById('form-error');
+            const nameError = document.getElementById('name-error');
+            const tagsList = document.getElementById('tags-list');
+            const listEmpty = document.getElementById('list-empty');
+            const deleteModal = document.getElementById('delete-modal');
+            const closeModalButton = document.getElementById('close-modal');
+            const cancelDeleteButton = document.getElementById('cancel-delete');
+            const confirmDeleteButton = document.getElementById('confirm-delete');
+            
+            // Variáveis globais
+            let tags = [];
+            let tagToDelete = null;
+            
+            // Carregar tags
+            loadTags();
+            
+            // Event listeners
+            tagForm.addEventListener('submit', handleSubmit);
+            cancelButton.addEventListener('click', resetForm);
+            closeModalButton.addEventListener('click', closeDeleteModal);
+            cancelDeleteButton.addEventListener('click', closeDeleteModal);
+            confirmDeleteButton.addEventListener('click', confirmDelete);
+            
+            // Funções
+            async function loadTags() {
+                try {
+                    // Mostrar loading
+                    loadingElement.style.display = 'block';
+                    contentElement.style.display = 'none';
+                    
+                    // Carregar tags da API
+                    const response = await api.tags.getAll();
+                    tags = response.tags || [];
+                    
+                    // Renderizar lista de tags
+                    renderTagsList();
+                    
+                    // Esconder loading e mostrar conteúdo
+                    loadingElement.style.display = 'none';
+                    contentElement.style.display = 'grid';
+                } catch (error) {
+                    console.error('Erro ao carregar tags:', error);
+                    loadingElement.textContent = 'Erro ao carregar tags. Por favor, tente novamente.';
+                }
+            }
+            
+            function renderTagsList() {
+                if (tags.length === 0) {
+                    tagsList.style.display = 'none';
+                    listEmpty.style.display = 'block';
+                    return;
+                }
+                
+                tagsList.style.display = 'flex';
+                listEmpty.style.display = 'none';
+                
+                let listHtml = '';
+                
+                tags.forEach(tag => {
+                    listHtml += `
+                        <div class="tag-item">
+                            ${tag.name}
+                            <div class="tag-actions">
+                                <button class="tag-action edit-button" data-id="${tag.id}" title="Editar">✏️</button>
+                                <button class="tag-action delete-button" data-id="${tag.id}" title="Excluir">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                tagsList.innerHTML = listHtml;
+                
+                // Adicionar event listeners para botões de edição e exclusão
+                document.querySelectorAll('.edit-button').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const tagId = parseInt(this.dataset.id);
+                        editTag(tagId);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-button').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const tagId = parseInt(this.dataset.id);
+                        openDeleteModal(tagId);
+                    });
+                });
+            }
+            
+            function editTag(tagId) {
+                const tag = tags.find(t => t.id === tagId);
+                
+                if (!tag) return;
+                
+                // Preencher formulário com dados da tag
+                tagIdInput.value = tag.id;
+                nameInput.value = tag.name;
+                
+                // Atualizar título e botões
+                formTitle.textContent = 'Editar Tag';
+                submitButton.textContent = 'Atualizar Tag';
+                cancelButton.style.display = 'inline-block';
+                
+                // Limpar mensagens
+                formSuccess.style.display = 'none';
+                formError.style.display = 'none';
+                nameError.style.display = 'none';
+                
+                // Focar no campo de nome
+                nameInput.focus();
+            }
+            
+            function resetForm() {
+                // Limpar formulário
+                tagForm.reset();
+                tagIdInput.value = '';
+                
+                // Restaurar título e botões
+                formTitle.textContent = 'Nova Tag';
+                submitButton.textContent = 'Adicionar Tag';
+                cancelButton.style.display = 'none';
+                
+                // Limpar mensagens
+                formSuccess.style.display = 'none';
+                formError.style.display = 'none';
+                nameError.style.display = 'none';
+            }
+            
+            function openDeleteModal(tagId) {
+                tagToDelete = tagId;
+                deleteModal.style.display = 'flex';
+            }
+            
+            function closeDeleteModal() {
+                deleteModal.style.display = 'none';
+                tagToDelete = null;
+            }
+            
+            async function confirmDelete() {
+                if (!tagToDelete) return;
+                
+                try {
+                    await api.tags.delete(tagToDelete);
+                    
+                    // Atualizar lista de tags
+                    tags = tags.filter(t => t.id !== tagToDelete);
+                    renderTagsList();
+                    
+                    // Fechar modal
+                    closeDeleteModal();
+                    
+                    // Exibir mensagem de sucesso
+                    formSuccess.textContent = 'Tag excluída com sucesso!';
+                    formSuccess.style.display = 'block';
+                    formError.style.display = 'none';
+                    
+                    // Resetar formulário se estiver editando a tag excluída
+                    if (parseInt(tagIdInput.value) === tagToDelete) {
+                        resetForm();
+                    }
+                } catch (error) {
+                    console.error('Erro ao excluir tag:', error);
+                    
+                    // Fechar modal
+                    closeDeleteModal();
+                    
+                    // Exibir mensagem de erro
+                    formError.textContent = 'Erro ao excluir tag. Por favor, tente novamente.';
+                    formError.style.display = 'block';
+                    formSuccess.style.display = 'none';
+                }
+            }
+            
+            async function handleSubmit(e) {
+                e.preventDefault();
+                
+                // Limpar mensagens de erro
+                nameError.style.display = 'none';
+                formError.style.display = 'none';
+                formSuccess.style.display = 'none';
+                
+                // Validar campos
+                const name = nameInput.value.trim();
+                
+                if (!name) {
+                    nameError.textContent = 'O nome da tag é obrigatório.';
+                    nameError.style.display = 'block';
+                    return;
+                }
+                
+                try {
+                    const tagId = tagIdInput.value;
+                    
+                    if (tagId) {
+                        // Atualizar tag existente
+                        const response = await api.tags.update(tagId, name);
+                        
+                        // Atualizar lista de tags
+                        const index = tags.findIndex(t => t.id === parseInt(tagId));
+                        if (index !== -1) {
+                            tags[index] = response.tag;
+                        }
+                        
+                        // Exibir mensagem de sucesso
+                        formSuccess.textContent = 'Tag atualizada com sucesso!';
+                    } else {
+                        // Criar nova tag
+                        const response = await api.tags.create(name);
+                        
+                        // Adicionar à lista de tags
+                        tags.push(response.tag);
+                        
+                        // Exibir mensagem de sucesso
+                        formSuccess.textContent = 'Tag criada com sucesso!';
+                    }
+                    
+                    // Renderizar lista atualizada
+                    renderTagsList();
+                    
+                    // Resetar formulário
+                    resetForm();
+                    
+                    // Mostrar mensagem de sucesso
+                    formSuccess.style.display = 'block';
+                } catch (error) {
+                    console.error('Erro ao salvar tag:', error);
+                    
+                    // Exibir mensagem de erro
+                    formError.textContent = 'Erro ao salvar tag. Por favor, tente novamente.';
+                    formError.style.display = 'block';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
